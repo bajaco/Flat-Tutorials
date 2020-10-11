@@ -5,17 +5,17 @@ database_name = 'database.db'
 database_directory = Path(__file__).absolute()
 database_path = "sqlite:///{}".format(database_directory / database_name)
 
-database = SQLAlchemy()
+db = SQLAlchemy()
 
-def setup_database(app):
+def setup_db(app):
     app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    database.app = app
-    database.init(app)
+    db.app = app
+    db.init(app)
 
-def database_drop_and_create_all():
-    database.drop_all()
-    database.create_all()
+def db_drop_and_create_all():
+    db.drop_all()
+    db.create_all()
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
