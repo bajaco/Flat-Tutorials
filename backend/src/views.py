@@ -3,7 +3,7 @@ from flask import jsonify
 from flask import request
 from sqlalchemy import func
 from .models import *
-
+from werkzeug.exceptions import abort
 bp = Blueprint('views', __name__)
 
 #######################
@@ -16,6 +16,8 @@ bp = Blueprint('views', __name__)
 @bp.route('/unpublished', methods=['GET'])
 def get_unpublished_list():
     query = Unpublished_Tutorial.query.filter_by(under_review=True).all()
+    if not query:
+        abort(404)
     result = [tut.short() for tut in query]
     return jsonify({
         'success': True,
@@ -170,5 +172,79 @@ def publish(tutorial_id):
 # ADMINISTRATION #
 ##################
 
+@bp.route('/admin/create-user', methods=['POST'])
+def create_user():
+    data = request.get_json()
+    try:
+        user = User(
+                auth0_id=data.get('auth0_id'),
+                username=data.get('username')
+                )
+        user.insert()
+        return jsonify({
+            'success': True,
+            'user_id': user.id
+            })
+    except:
+        abort(500)
 
+@bp.route('/admin/users', methods=['GET'])
+def list_users():
+    try:
+        users = User.query.all()
+        if len(users) == 0:
+            abort(404)
+        result = [user.description() for user in users]
+        return jsonify({
+            'success': True,
+            'users': result
+            }), 200
+    except:
+        abort(500)
 
+@bp.route('/admin/user/<int:user_id>', methods=['GET'])
+def get_user(user_id):
+    user = User.query.get_or_404(user_id)
+    return jsonify({
+        'success': True,
+        'user': user.description()
+        }), 200
+
+@bp.route('/admin/user/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    user = User.query.get_or_404(user_id)
+    try:
+        
+        unpublished = user.unpublished
+        published = user.published
+        
+        if len(unpublished) > 0:
+            for tutorial in unpublished:
+                tutorial.delete()
+        if len(published) > 0:
+            for tutorial in published:
+                tutorial.delete()
+        
+        user.delete()
+        return jsonify({
+            'success': True,
+            'deleted_id': user.id
+            }), 200
+    except:
+        abort(500)
+
+# The reason for this atypical endpoint is that it deletes both
+# published and unpublished tutorials
+@bp.route('/admin/tutorial/<int:tutorial_id>', methods=['DELETE'])
+def delete_tutorials(tutorial_id):
+    unpublished = Unpublished_Tutorial.query.get_or_404(tutorial_id)
+    published = Published_Tutorial.query.get_or_404(tutorial_id)
+    try:
+        unpublished.delete()
+        published.delete()
+        return jsonify({
+            'success': True,
+            'deleted_id': tutorial_id
+            }), 200
+    except:
+        abort(500)

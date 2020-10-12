@@ -8,8 +8,11 @@ def dictit(obj, *args):
         result = getattr(obj, arg)
         if isinstance(result,list):
             result = [str(i) for i in result]
+        elif isinstance(result,int):
+            result = result
         else:
             result = str(result)
+
         new_dict[arg] = result
         
     return new_dict
@@ -41,6 +44,9 @@ class User(db.Model):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
+
+    def description(self):
+        return dictit(self,'id', 'auth0_id','username')
 
 # Association table between unpublished tutorials and tags
 unpublished_tutorial_tag = db.Table('unpublished_tutorials_tags', db.Model.metadata,

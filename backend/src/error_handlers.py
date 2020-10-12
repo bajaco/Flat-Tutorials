@@ -1,7 +1,6 @@
     
 from flask import Blueprint
 from flask import jsonify
-from werkzeug.exceptions import abort
 bp = Blueprint('error_handlers', __name__)
 
 @bp.app_errorhandler(404)
@@ -20,12 +19,12 @@ def not_allowed(error):
         'message': 'method not allowed'
         })
 
-@bp.app_errorhandler(422)
+@bp.app_errorhandler(500)
 def internal_server_error(error):
     #db.session.rollback()
     return jsonify({
         'success': False,
-        'error': 422,
+        'error': 500,
         'message': 'internal server error'
         })
 
