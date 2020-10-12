@@ -91,6 +91,23 @@ def get_published_by_tags(tag1,tag2):
 # PUBLISHING TUTORIALS #
 ########################
 
+#For regular user:
+#submit tutorial
+@app.route('/submit', methods=['POST'])
+def submit():
+    data = request.get_json()
+    tutorial = Unpublished_Tutorial(
+            author_id=data.get('author_id'),
+            title=data.get('title'),
+            text=data.get('text')
+            )
+    for tag in data.get('tags'):
+        dbtag = Tag.query.filter(str(Tag.name).lower() == tag.lower()).one_or_none()
+        if not dbtag:
+            dbtag = Tag(name=tag)
+        tutorial.tags.append(dbtag)
+    tutorial.insert()
+            
 #For Admin/Moderator:
 #create or update published tutorial by copying unpublished
 #returns newly published tutorial
