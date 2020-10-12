@@ -61,6 +61,7 @@ class Unpublished_Tutorial(db.Model):
     __tablename__ = 'unpublished_tutorials'
     id = db.Column(db.Integer, primary_key=True)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    under_review = db.Column(db.Boolean, nullable=False)
     title = db.Column(db.String(), nullable=False)
     text = db.Column(db.String(), nullable=False)
     tags = db.relationship('Tag',
