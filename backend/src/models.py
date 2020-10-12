@@ -79,10 +79,10 @@ class Unpublished_Tutorial(db.Model):
         db.session.commit()   
 
     def short(self):
-        return dictit(self,'id','author','title','tags')
+        return dictit(self,'id','author_id','author','title','tags')
        
     def long(self):
-        return dictit(self,'id','author','title','tags','text')
+        return dictit(self,'id','author_id', 'author','title','tags','text')
      
 # Published tutorials
 class Published_Tutorial(db.Model):
@@ -107,10 +107,10 @@ class Published_Tutorial(db.Model):
         db.session.commit()
     
     def short(self):
-        return dictit(self,'id','author','title','tags')
+        return dictit(self,'id','author_id','author','title','tags')
        
     def long(self):
-        return dictit(self,'id','author','title','tags','text')
+        return dictit(self,'id','author_id','author','title','tags','text')
 
 # Tags to be applied to tutorials when submitted
 class Tag(db.Model):

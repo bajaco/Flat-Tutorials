@@ -3,6 +3,11 @@ from flask import abort
 from . import app
 from .models import *
 
+#######################
+# ACCESSING TUTORIALS #
+#######################
+
+
 # get all short form unpublished tutorials
 @app.route('/unpublished', methods=['GET'])
 def get_unpublished_list():
@@ -42,6 +47,51 @@ def get_published_tutorial(tutorial_id):
     }), 200
 
 
+#get all short form published tutorials from specific user
+@app.route('/published/by-author/<int:author_id>', methods=['GET'])
+def get_published_list_by_author(author_id):
+    tutorials = User.query.get(author_id).published
+    result = [tut.short() for tut in tutorials]
+    return jsonify({
+        'success': True,
+        'tutorials': result
+        }), 200
+
+#get all shortform list by tag
+@app.route('/published/tags/<string:tag>', methods=['GET'])
+def get_published_by_tag(tag):
+    search = "%{}%".format(tag)
+    tutorials = Tag.query.filter(Tag.name.ilike(search)).first().published_tutorials
+    result = [tut.short() for tut in tutorials]
+    return jsonify({
+        'success': True,
+        'tutorials': result
+        }), 200
+
+#get all shortform list by tags
+@app.route('/published/tags/<string:tag1>/<string:tag2>', methods=['GET'])
+def get_published_by_tags(tag1,tag2):
+    search1 = "%{}%".format(tag1)
+    search2 = "%{}%".format(tag2)
+    
+    #Not happy about this, but flask-sqlalchemy does not seem to allow
+    #calling ilike on a relationship: no way to call on Published_Tutorial.tags
+    res1 = Tag.query.filter(Tag.name.ilike(search1)).first().published_tutorials
+    res2 = Tag.query.filter(Tag.name.ilike(search2)).first().published_tutorials
+    tutorials = [tut for tut in res1 if tut in res2]
+  
+    result = [tut.short() for tut in tutorials]
+    return jsonify({
+        'success': True,
+        'tutorials': result
+        }), 200 
+   
+
+########################
+# PUBLISHING TUTORIALS #
+########################
+
+#For Admin/Moderator:
 #create or update published tutorial by copying unpublished
 #returns newly published tutorial
 @app.route('/publish/<int:tutorial_id>', methods=['GET'])
