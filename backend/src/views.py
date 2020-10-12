@@ -1,19 +1,19 @@
+from flask import Blueprint
 from flask import jsonify
 from flask import request
-from flask import abort
 from sqlalchemy import func
-from . import app
 from .models import *
+
+bp = Blueprint('views', __name__)
 
 #######################
 # ACCESSING TUTORIALS #
 #######################
 
-
 # get all short form unpublished tutorials
 # Only returns tutorials not yet published
 # since they were last changed.
-@app.route('/unpublished', methods=['GET'])
+@bp.route('/unpublished', methods=['GET'])
 def get_unpublished_list():
     query = Unpublished_Tutorial.query.filter_by(under_review=True).all()
     result = [tut.short() for tut in query]
@@ -23,16 +23,17 @@ def get_unpublished_list():
         }), 200
     
 #get long form of unpublished tutorial
-@app.route('/unpublished/<int:tutorial_id>', methods=['GET'])
+@bp.route('/unpublished/<int:tutorial_id>', methods=['GET'])
 def get_unpublished_tutorial(tutorial_id):
-    result = Unpublished_Tutorial.query.get_or_404(tutorial_id).long()
+    query = Unpublished_Tutorial.query.get_or_404(tutorial_id)
+    result = query.long()
     return jsonify({
         'success': True,
         'tutorial': result
     }), 200
 
 #get all short form published tutorials
-@app.route('/published', methods=['GET'])
+@bp.route('/published', methods=['GET'])
 def get_published_list():
     query = Published_Tutorial.query.all()
     result = [tut.short() for tut in query]
@@ -42,7 +43,7 @@ def get_published_list():
         }), 200
 
 #get long form of published tutorial
-@app.route('/published/<int:tutorial_id>', methods=['GET'])
+@bp.route('/published/<int:tutorial_id>', methods=['GET'])
 def get_published_tutorial(tutorial_id):
     result = Published_Tutorial.query.get_or_404(tutorial_id).long()
     return jsonify({
@@ -52,7 +53,7 @@ def get_published_tutorial(tutorial_id):
 
 
 #get all short form published tutorials from specific user
-@app.route('/published/by-author/<int:author_id>', methods=['GET'])
+@bp.route('/published/by-author/<int:author_id>', methods=['GET'])
 def get_published_list_by_author(author_id):
     tutorials = User.query.get_or_404(author_id).published
     result = [tut.short() for tut in tutorials]
@@ -62,7 +63,7 @@ def get_published_list_by_author(author_id):
         }), 200
 
 #get all shortform list by tag
-@app.route('/published/tags/<string:tag>', methods=['GET'])
+@bp.route('/published/tags/<string:tag>', methods=['GET'])
 def get_published_by_tag(tag):
     search = "%{}%".format(tag)
     tutorials = Tag.query.filter(Tag.name.ilike(search)).first_or_404().published_tutorials
@@ -73,7 +74,7 @@ def get_published_by_tag(tag):
         }), 200
 
 #get all shortform list by tags
-@app.route('/published/tags/<string:tag1>/<string:tag2>', methods=['GET'])
+@bp.route('/published/tags/<string:tag1>/<string:tag2>', methods=['GET'])
 def get_published_by_tags(tag1,tag2):
     search1 = "%{}%".format(tag1)
     search2 = "%{}%".format(tag2)
@@ -97,7 +98,7 @@ def get_published_by_tags(tag1,tag2):
 
 #For regular user:
 #submit tutorial
-@app.route('/submit', methods=['POST'])
+@bp.route('/submit', methods=['POST'])
 def submit():
     data = request.get_json()
     tutorial = Unpublished_Tutorial(
@@ -114,7 +115,7 @@ def submit():
         if not tag:
             tag = Tag(name=tag_name)
             tag.insert()
-        tutorial.tags.append(dbtag)
+        tutorial.tags.append(tag)
     tutorial.insert()
     result = tutorial.long()
     return jsonify({
@@ -126,31 +127,36 @@ def submit():
 #For Admin/Moderator:
 #create or update published tutorial by copying unpublished
 #returns newly published tutorial
-@app.route('/publish/<int:tutorial_id>', methods=['GET'])
+@bp.route('/publish/<int:tutorial_id>', methods=['GET'])
 def publish(tutorial_id):
     unpublished = Unpublished_Tutorial.query.get_or_404(tutorial_id)
+    
+    #No or_404 because we are testing for None
     published = Published_Tutorial.query.get(tutorial_id)
     
-    #if it doesn't exist create it
-    update = False
-    if published:
-        update = True
-    else:
-        published = Published_Tutorial(id=unpublished.id)
-    
-    #make updates
-    published.author_id = unpublished.author_id
-    published.title = unpublished.title
-    published.text = unpublished.text
-    published.tags = unpublished.tags
-    unpublished.under_review = False
-    unpublished.update()
-    
-    #update or insert depending on whether it exists
-    if update:
-        published.update()
-    else:
-        published.insert()
+    try:
+        #if it doesn't exist create it
+        update = False
+        if published:
+            update = True
+        else:
+            published = Published_Tutorial(id=unpublished.id)
+        
+        #make updates
+        published.author_id = unpublished.author_id
+        published.title = unpublished.title
+        published.text = unpublished.text
+        published.tags = unpublished.tags
+        unpublished.under_review = False
+        unpublished.update()
+        
+        #update or insert depending on whether it exists
+        if update:
+            published.update()
+        else:
+            published.insert()
+    except:
+        abort(500)
     
     #return newly published tutorial
     result = Published_Tutorial.query.get_or_404(tutorial_id).long()
@@ -160,4 +166,9 @@ def publish(tutorial_id):
         'tutorial': result
         }), 200
 
-    
+##################
+# ADMINISTRATION #
+##################
+
+
+
