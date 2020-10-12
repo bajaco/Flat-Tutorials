@@ -38,6 +38,8 @@ def get_unpublished_tutorial(tutorial_id):
 @bp.route('/published', methods=['GET'])
 def get_published_list():
     query = Published_Tutorial.query.all()
+    if not query:
+        abort(404)
     result = [tut.short() for tut in query]
     return jsonify({
         'success': True,
@@ -58,6 +60,8 @@ def get_published_tutorial(tutorial_id):
 @bp.route('/published/by-author/<int:author_id>', methods=['GET'])
 def get_published_list_by_author(author_id):
     tutorials = User.query.get_or_404(author_id).published
+    if len(tutorials) == 0:
+        abort(404)
     result = [tut.short() for tut in tutorials]
     return jsonify({
         'success': True,
@@ -69,6 +73,8 @@ def get_published_list_by_author(author_id):
 def get_published_by_tag(tag):
     search = "%{}%".format(tag)
     tutorials = Tag.query.filter(Tag.name.ilike(search)).first_or_404().published_tutorials
+    if not tutorials:
+        abort(404)
     result = [tut.short() for tut in tutorials]
     return jsonify({
         'success': True,
@@ -86,7 +92,8 @@ def get_published_by_tags(tag1,tag2):
     res1 = Tag.query.filter(Tag.name.ilike(search1)).first_or_404().published_tutorials
     res2 = Tag.query.filter(Tag.name.ilike(search2)).first_or_404().published_tutorials
     tutorials = [tut for tut in res1 if tut in res2]
-  
+    if not tutorials:
+        abort(404)
     result = [tut.short() for tut in tutorials]
     return jsonify({
         'success': True,
