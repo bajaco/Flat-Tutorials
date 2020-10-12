@@ -172,7 +172,8 @@ def publish(tutorial_id):
 # ADMINISTRATION #
 ##################
 
-@bp.route('/admin/create-user', methods=['POST'])
+#create a user
+@bp.route('/admin/user', methods=['POST'])
 def create_user():
     data = request.get_json()
     try:
@@ -188,6 +189,7 @@ def create_user():
     except:
         abort(500)
 
+#list users
 @bp.route('/admin/users', methods=['GET'])
 def list_users():
     try:
@@ -202,6 +204,7 @@ def list_users():
     except:
         abort(500)
 
+#get specific user data
 @bp.route('/admin/user/<int:user_id>', methods=['GET'])
 def get_user(user_id):
     user = User.query.get_or_404(user_id)
@@ -210,6 +213,7 @@ def get_user(user_id):
         'user': user.description()
         }), 200
 
+#delete user
 @bp.route('/admin/user/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
     user = User.query.get_or_404(user_id)
@@ -233,6 +237,7 @@ def delete_user(user_id):
     except:
         abort(500)
 
+# delete tutorial
 # The reason for this atypical endpoint is that it deletes both
 # published and unpublished tutorials
 @bp.route('/admin/tutorial/<int:tutorial_id>', methods=['DELETE'])
