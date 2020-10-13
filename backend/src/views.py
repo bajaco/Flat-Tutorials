@@ -162,10 +162,7 @@ def submit():
             under_review=True
             )
     for tag_name in data.get('tags'):
-        tag = Tag.query.filter(
-                func.lower(Tag.name) == func.lower(tag_name)
-                )
-        tag = tag.one_or_none()
+        tag = Tag.query.filter_by(name=tag_name).one_or_none()
         if not tag:
             tag = Tag(name=tag_name)
             tag.insert()
@@ -176,7 +173,33 @@ def submit():
         'success': True,
         'tutorial': result
     }), 200
-        
+
+#edit and resubmit tutorial
+@bp.route('/edit/<int:tutorial_id>', methods=['PATCH'])
+def edit(tutorial_id):
+    data = request.get_json()
+    tutorial = Unpublished_Tutorial.query.get_or_404(tutorial_id)
+    try:
+        tutorial.title = data.get('title')
+        tutorial.text = data.get('text')
+        tutorial.under_review=True
+        for tag in tutorial.tags:
+            tutorial.tags.remove(tag)
+        for tag_name in data.get('tags'):
+            tag = Tag.query.filter_by(name=tag_name).one_or_none()
+            if not tag:
+                tag = Tag(name=tag_name)
+                tag.insert()
+            tutorial.tags.append(tag)
+        tutorial.update()
+    except:
+        abort(500)
+
+    result = tutorial.long()
+    return jsonify({
+        'success': True,
+        'tutorial': result
+        }),200
             
 #For Admin/Moderator:
 #create or update published tutorial by copying unpublished
