@@ -6,7 +6,47 @@ from .models import *
 from .auth import requires_auth
 from .auth import AuthError
 from werkzeug.exceptions import abort
+import requests
 bp = Blueprint('views', __name__)
+
+# Helper functions
+
+# When called this will get userinformation to be used
+# for context in various views. If the user is not present
+# in the database it will be created.
+def user_context(payload):
+    a_id = payload['sub']
+    user = User.query.filter_by(auth0_id=a_id).one_or_none()
+    if not user:
+        try:
+            # Authorization is assumed to exist because user_context will
+            # only be called within authorized endpoints.
+            token = request.headers.get('Authorization', None).split()[1]
+            
+            user_url = 'https://agyx.auth0.com/userinfo'
+            authorization = {'Authorization': 'Bearer {}'.format(token)}
+            r = requests.get(url=user_url,headers=authorization)
+            user_info = r.json()   
+            user = User(
+                    auth0_id=user_info['sub'],
+                    username=user_info['sub'][:20]
+                    )
+            if 'email' in user_info:
+                user.email = user_info['email']
+            
+            # This is a little atypical, but I want to use the user id in the
+            # username to ensure it's unique. Auth0_id used as a temporary
+            # placeholder until the id is created.
+            user.insert()
+            user.username=''.join(user_info['nickname'].split()) + '#' + str(user.id)
+            user.update()
+        except:
+            abort(500)
+    return {
+            'id': user.id,
+            'email': user.email,
+            'username': user.username,
+            }
 
 #######################
 # ACCESSING TUTORIALS #
@@ -18,15 +58,16 @@ bp = Blueprint('views', __name__)
 @bp.route('/unpublished', methods=['GET'])
 @requires_auth('view:unpublished_list')
 def get_unpublished_list(payload):
+    context = user_context(payload)
     query = Unpublished_Tutorial.query.filter_by(under_review=True).all()
     if not query:
         abort(404)
     result = [tut.short() for tut in query]
+    
     return jsonify({
         'success': True,
-        'tutorials': result,
-        'payload': payload
-        }), 200
+        'tutorials': result
+        }), 200 
     
 #get long form of unpublished tutorial
 @bp.route('/unpublished/<int:tutorial_id>', methods=['GET'])

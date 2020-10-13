@@ -23,7 +23,9 @@ class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     auth0_id = db.Column(db.String(600), nullable=False)
-    username = db.Column(db.String(20))
+    username = db.Column(db.String(20), nullable=False)
+    email = db.Column(db.String(40))
+    
     unpublished = db.relationship('Unpublished_Tutorial',
             backref='author',
             lazy=True)
