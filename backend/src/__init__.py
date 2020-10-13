@@ -15,11 +15,14 @@ def create_app(test_config=None):
             'localhost:5432', database_name)
     app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config['SECRET_KEY'] = 'vgT0?(XKnWvJfmnRW/:e'
     
     db.app = app
     db.init_app(app)
     migrate = Migrate(app,db)
+    
     from . import views, error_handlers
     app.register_blueprint(views.bp)
-    app.register_blueprint(error_handlers.bp)
+    app.register_blueprint(error_handlers.bp) 
+    
     return app

@@ -3,6 +3,8 @@ from flask import jsonify
 from flask import request
 from sqlalchemy import func
 from .models import *
+from .auth import requires_auth
+from .auth import AuthError
 from werkzeug.exceptions import abort
 bp = Blueprint('views', __name__)
 
@@ -14,14 +16,16 @@ bp = Blueprint('views', __name__)
 # Only returns tutorials not yet published
 # since they were last changed.
 @bp.route('/unpublished', methods=['GET'])
-def get_unpublished_list():
+@requires_auth('view:unpublished_list')
+def get_unpublished_list(payload):
     query = Unpublished_Tutorial.query.filter_by(under_review=True).all()
     if not query:
         abort(404)
     result = [tut.short() for tut in query]
     return jsonify({
         'success': True,
-        'tutorials': result
+        'tutorials': result,
+        'payload': payload
         }), 200
     
 #get long form of unpublished tutorial
