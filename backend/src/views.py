@@ -129,6 +129,7 @@ def get_published_by_tags(tag1,tag2):
 @bp.route('/submit', methods=['POST'])
 @requires_auth('submit:tutorial')
 def submit(payload):
+    context = user_context(payload)
     try:
         data = request.get_json()
         tutorial = Unpublished_Tutorial(
@@ -235,6 +236,7 @@ def get_unpublished_list(payload):
 @bp.route('/unpublished/<int:tutorial_id>', methods=['GET'])
 @requires_auth('view:unpublished')
 def get_unpublished_tutorial(payload,tutorial_id):
+    context = user_context(payload)
     query = Unpublished_Tutorial.query.get_or_404(tutorial_id)
     result = query.long()
     return jsonify({
@@ -247,6 +249,7 @@ def get_unpublished_tutorial(payload,tutorial_id):
 @bp.route('/publish/<int:tutorial_id>', methods=['GET'])
 @requires_auth('approve:tutorial')
 def publish(payload, tutorial_id):
+    context = user_context(payload)
     unpublished = Unpublished_Tutorial.query.get_or_404(tutorial_id)
     
     #No or_404 because we are testing for None
@@ -291,6 +294,7 @@ def publish(payload, tutorial_id):
 @bp.route('/deny/<int:tutorial_id>', methods=['PATCH'])
 @requires_auth('deny:tutorial')
 def deny(payload, tutorial_id):
+    context = user_context(payload)
     data = request.get_json()
     tutorial = Unpublished_Tutorial.query.get_or_404(tutorial_id)
     try:
@@ -313,6 +317,7 @@ def deny(payload, tutorial_id):
 @bp.route('/admin/users', methods=['GET'])
 @requires_auth('list:users')
 def list_users(payload):
+    context = user_context(payload)
     try:
         users = User.query.all()
         if len(users) == 0:
@@ -331,6 +336,7 @@ def list_users(payload):
 @bp.route('/admin/tutorial/<int:tutorial_id>', methods=['DELETE'])
 @requires_auth('delete:tutorial')
 def delete_tutorial(payload,tutorial_id):
+    context = user_context(payload)
     unpublished = Unpublished_Tutorial.query.get_or_404(tutorial_id)
     published = Published_Tutorial.query.get_or_404(tutorial_id)
     try:
@@ -348,6 +354,7 @@ def delete_tutorial(payload,tutorial_id):
 @bp.route('/admin/unpublish/<int:tutorial_id>', methods=['PATCH'])
 @requires_auth('unpublish_tutorial')
 def unpublish_tutorial(payload,tutorial_id):
+    context = user_context(payload)
     data = request.get_json()
     published_tutorial = Published_Tutorial.query.get_or_404(tutorial_id)
     unpublished_tutorial = Unpublished_Tutorial.query.get_or_404(tutorial_id)
