@@ -71,7 +71,8 @@ def get_unpublished_list(payload):
     
 #get long form of unpublished tutorial
 @bp.route('/unpublished/<int:tutorial_id>', methods=['GET'])
-def get_unpublished_tutorial(tutorial_id):
+@requires_auth('view:unpublished')
+def get_unpublished_tutorial(payload,tutorial_id):
     query = Unpublished_Tutorial.query.get_or_404(tutorial_id)
     result = query.long()
     return jsonify({
@@ -153,22 +154,26 @@ def get_published_by_tags(tag1,tag2):
 #For regular user:
 #submit tutorial
 @bp.route('/submit', methods=['POST'])
-def submit():
-    data = request.get_json()
-    tutorial = Unpublished_Tutorial(
-            author_id=data.get('author_id'),
-            title=data.get('title'),
-            text=data.get('text'),
-            under_review=True
-            )
-    for tag_name in data.get('tags'):
-        tag = Tag.query.filter_by(name=tag_name).one_or_none()
-        if not tag:
-            tag = Tag(name=tag_name)
-            tag.insert()
-        tutorial.tags.append(tag)
-    tutorial.insert()
-    result = tutorial.long()
+@requires_auth('submit:tutorial')
+def submit(payload):
+    try:
+        data = request.get_json()
+        tutorial = Unpublished_Tutorial(
+                author_id=data.get('author_id'),
+                title=data.get('title'),
+                text=data.get('text'),
+                under_review=True
+                )
+        for tag_name in data.get('tags'):
+            tag = Tag.query.filter_by(name=tag_name).one_or_none()
+            if not tag:
+                tag = Tag(name=tag_name)
+                tag.insert()
+            tutorial.tags.append(tag)
+        tutorial.insert()
+        result = tutorial.long()
+    except:
+        abort(500)
     return jsonify({
         'success': True,
         'tutorial': result
@@ -176,9 +181,13 @@ def submit():
 
 #edit and resubmit tutorial
 @bp.route('/edit/<int:tutorial_id>', methods=['PATCH'])
-def edit(tutorial_id):
+@requires_auth('edit:tutorial')
+def edit(payload, tutorial_id):
+    context = user_context(payload)
     data = request.get_json()
     tutorial = Unpublished_Tutorial.query.get_or_404(tutorial_id)
+    if tutorial.author_id != int(context['id']):
+        abort(403)
     try:
         tutorial.title = data.get('title')
         tutorial.text = data.get('text')
@@ -200,19 +209,25 @@ def edit(tutorial_id):
         'success': True,
         'tutorial': result
         }),200
-            
-#For Admin/Moderator:
+
+##############
+# MODERATION #
+##############
+
 #create or update published tutorial by copying unpublished
 #returns newly published tutorial
 @bp.route('/publish/<int:tutorial_id>', methods=['GET'])
-def publish(tutorial_id):
+@requires_auth('approve:tutorial')
+def publish(payload, tutorial_id):
     unpublished = Unpublished_Tutorial.query.get_or_404(tutorial_id)
     
     #No or_404 because we are testing for None
     published = Published_Tutorial.query.get(tutorial_id)
     
     try:
-        #if it doesn't exist create it
+        # If it doesn't exist create it
+        # Update flag notes whether the tutorial is being published
+        # for the first time or simply updated.
         update = False
         if published:
             update = True
@@ -243,30 +258,33 @@ def publish(tutorial_id):
         'tutorial': result
         }), 200
 
+# Deny a tutorial from being published due to content or 
+# quality concerns.
+@bp.route('/deny/<int:tutorial_id>', methods=['PATCH'])
+@requires_auth('deny:tutorial')
+def deny(payload, tutorial_id):
+    data = request.get_json()
+    tutorial = Unpublished_Tutorial.query.get_or_404(tutorial_id)
+    try:
+        tutorial.reviewer_notes = data.get('reviewer_notes')
+        tutorial.update()
+    except:
+        abort(500)
+    return jsonify({
+        'success': True,
+        'denied_id': tutorial.id,
+        'reviewer_notes': data.get('reviewer_notes')
+        }),200
+
+
 ##################
 # ADMINISTRATION #
 ##################
 
-#create a user
-@bp.route('/admin/user', methods=['POST'])
-def create_user():
-    data = request.get_json()
-    try:
-        user = User(
-                auth0_id=data.get('auth0_id'),
-                username=data.get('username')
-                )
-        user.insert()
-        return jsonify({
-            'success': True,
-            'user_id': user.id
-            })
-    except:
-        abort(500)
-
 #list users
 @bp.route('/admin/users', methods=['GET'])
-def list_users():
+@requires_auth('list:users')
+def list_users(payload):
     try:
         users = User.query.all()
         if len(users) == 0:
@@ -279,44 +297,12 @@ def list_users():
     except:
         abort(500)
 
-#get specific user data
-@bp.route('/admin/user/<int:user_id>', methods=['GET'])
-def get_user(user_id):
-    user = User.query.get_or_404(user_id)
-    return jsonify({
-        'success': True,
-        'user': user.description()
-        }), 200
-
-#delete user
-@bp.route('/admin/user/<int:user_id>', methods=['DELETE'])
-def delete_user(user_id):
-    user = User.query.get_or_404(user_id)
-    try:
-        
-        unpublished = user.unpublished
-        published = user.published
-        
-        if len(unpublished) > 0:
-            for tutorial in unpublished:
-                tutorial.delete()
-        if len(published) > 0:
-            for tutorial in published:
-                tutorial.delete()
-        
-        user.delete()
-        return jsonify({
-            'success': True,
-            'deleted_id': user.id
-            }), 200
-    except:
-        abort(500)
-
 # delete tutorial
 # The reason for this atypical endpoint is that it deletes both
 # published and unpublished tutorials
 @bp.route('/admin/tutorial/<int:tutorial_id>', methods=['DELETE'])
-def delete_tutorials(tutorial_id):
+@requires_auth('delete:tutorial')
+def delete_tutorial(payload,tutorial_id):
     unpublished = Unpublished_Tutorial.query.get_or_404(tutorial_id)
     published = Published_Tutorial.query.get_or_404(tutorial_id)
     try:
@@ -328,3 +314,26 @@ def delete_tutorials(tutorial_id):
             }), 200
     except:
         abort(500)
+
+# Unpublish tutorial.
+# Similar to delete tutorial but does not delete the unpublished version.
+@bp.route('/admin/unpublish/<int:tutorial_id>', methods=['PATCH'])
+@requires_auth('unpublish_tutorial')
+def unpublish_tutorial(payload,tutorial_id):
+    data = request.get_json()
+    published_tutorial = Published_Tutorial.query.get_or_404(tutorial_id)
+    unpublished_tutorial = Unpublished_Tutorial.query.get_or_404(tutorial_id)
+    try:
+        published_tutorial.delete()
+
+        # Add notes to unpublished tutorial to inform user why it was deleted.
+        unpublished_tutorial.reviewer_notes = data.get('reviewer_notes')
+        unpublished_tutorial.update()
+    except:
+        abort(500)
+
+    return jsonify({
+        'success': True,
+        'unpublished_id': unpublished_tutorial.id,
+        'reviewer_notes': data.get('reviewer_notes')
+        }),200

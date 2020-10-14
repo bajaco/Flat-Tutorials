@@ -48,7 +48,7 @@ class User(db.Model):
         db.session.commit()
 
     def description(self):
-        return dictit(self,'id', 'auth0_id','username')
+        return dictit(self,'id', 'auth0_id','username','email')
 
 # Association table between unpublished tutorials and tags
 unpublished_tutorial_tag = db.Table('unpublished_tutorials_tags', db.Model.metadata,
@@ -70,8 +70,9 @@ class Unpublished_Tutorial(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     under_review = db.Column(db.Boolean, nullable=False)
-    title = db.Column(db.String(), nullable=False)
+    title = db.Column(db.String(100), nullable=False)
     text = db.Column(db.String(), nullable=False)
+    reviewer_notes = db.Column(db.String(100))
     tags = db.relationship('Tag',
         secondary=unpublished_tutorial_tag,
         back_populates='unpublished_tutorials')
