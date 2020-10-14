@@ -1,11 +1,11 @@
 import ast
 
-def ind(n):
-    return n*'    '
-
+# Generate empty test functions template.
+# python test_template_generator.py > test_app.py
 
 test_roles = ['admin', 'moderator', 'end_user', 'public']
 
+#Load Source Tree
 with open('views.py','r') as f:
     data = f.read()
 source_tree = ast.parse(data)
@@ -32,6 +32,11 @@ for node in source_tree.body:
             endpoints.append(endpoint)
 
 lines = []
+# Formatting: This section uses elements from the
+# endpoints list to generate tests for every 
+# endpoint for every role. This generates more 
+# tests that will probably be needed but does
+# establish a consistent naming strategy
 for role in test_roles:
     length = len(role + ' tests')
     lines.append('#'*(length+4))
