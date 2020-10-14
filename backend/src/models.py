@@ -16,7 +16,7 @@ def dictit(obj, *args):
         new_dict[arg] = result
         
     return new_dict
-
+    
 
 # User class with linking id to auth0id
 class User(db.Model):
