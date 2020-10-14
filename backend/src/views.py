@@ -48,37 +48,10 @@ def user_context(payload):
             'username': user.username,
             }
 
-#######################
-# ACCESSING TUTORIALS #
-#######################
+###############
+# OPEN ACCESS #
+###############
 
-# get all short form unpublished tutorials
-# Only returns tutorials not yet published
-# since they were last changed.
-@bp.route('/unpublished', methods=['GET'])
-@requires_auth('view:unpublished_list')
-def get_unpublished_list(payload):
-    context = user_context(payload)
-    query = Unpublished_Tutorial.query.filter_by(under_review=True).all()
-    if not query:
-        abort(404)
-    result = [tut.short() for tut in query]
-    
-    return jsonify({
-        'success': True,
-        'tutorials': result
-        }), 200 
-    
-#get long form of unpublished tutorial
-@bp.route('/unpublished/<int:tutorial_id>', methods=['GET'])
-@requires_auth('view:unpublished')
-def get_unpublished_tutorial(payload,tutorial_id):
-    query = Unpublished_Tutorial.query.get_or_404(tutorial_id)
-    result = query.long()
-    return jsonify({
-        'success': True,
-        'tutorial': result
-    }), 200
 
 #get all short form published tutorials
 @bp.route('/published', methods=['GET'])
@@ -147,9 +120,9 @@ def get_published_by_tags(tag1,tag2):
         }), 200 
    
 
-########################
-# PUBLISHING TUTORIALS #
-########################
+###################
+# REGISTERED USER #
+###################
 
 #For regular user:
 #submit tutorial
@@ -210,9 +183,64 @@ def edit(payload, tutorial_id):
         'tutorial': result
         }),200
 
+# Get short form submitted tutorials
+@bp.route('/submitted', methods=['GET'])
+@requires_auth('submit:tutorial')
+def get_submitted_list(payload):
+    context = user_context(payload)
+    tutorials = Tutorial.query.filter_by(author_id=context['id'])
+    tutorials = tutorials.filter_by(under_review=True).all()
+    result = [tutorial.short() for tutorial in tutorials]
+    return jsonify({
+        'success': True,
+        'tutorials': result
+        }), 200 
+    
+# Get long form submitted tutorial
+@bp.route('/submitted<int:tutorial_id>', methods=['GET'])
+@requires_auth('submit:tutorial')
+def get_submitted_tutorial(payload, tutorial_id):
+    context = user_context(payload)
+    tutorial = Unpublished_Tutorial.query.get_or_404()
+    result = tutorial.long()
+    if context['id'] != result.author_id:
+        abort(403)
+    return jsonify({
+        'success': True,
+        'tutorial': result
+        }), 200 
+ 
 ##############
 # MODERATION #
 ##############
+
+# get all short form unpublished tutorials
+# Only returns tutorials not yet published
+# since they were last changed.
+@bp.route('/unpublished', methods=['GET'])
+@requires_auth('view:unpublished_list')
+def get_unpublished_list(payload):
+    context = user_context(payload)
+    query = Unpublished_Tutorial.query.filter_by(under_review=True).all()
+    if not query:
+        abort(404)
+    result = [tut.short() for tut in query]
+    
+    return jsonify({
+        'success': True,
+        'tutorials': result
+        }), 200 
+    
+#get long form of unpublished tutorial
+@bp.route('/unpublished/<int:tutorial_id>', methods=['GET'])
+@requires_auth('view:unpublished')
+def get_unpublished_tutorial(payload,tutorial_id):
+    query = Unpublished_Tutorial.query.get_or_404(tutorial_id)
+    result = query.long()
+    return jsonify({
+        'success': True,
+        'tutorial': result
+    }), 200
 
 #create or update published tutorial by copying unpublished
 #returns newly published tutorial
@@ -336,4 +364,4 @@ def unpublish_tutorial(payload,tutorial_id):
         'success': True,
         'unpublished_id': unpublished_tutorial.id,
         'reviewer_notes': data.get('reviewer_notes')
-        }),200
+        }), 200

@@ -3,6 +3,15 @@ from flask import Blueprint
 from flask import jsonify
 bp = Blueprint('error_handlers', __name__)
 
+@bp.app_errorhandler(403)
+def forbidden(error):
+    return jsonify({
+        'success': False,
+        'error': 403,
+        'message': 'resource is forbidden'
+        })
+
+
 @bp.app_errorhandler(404)
 def not_found(error):
     return jsonify({
