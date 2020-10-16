@@ -159,7 +159,7 @@ class FlatTutorialsTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 401)
 
     
-    ##################
+    #################
     # end_user tests #
     ##################
     def test_end_user_submit(self):
