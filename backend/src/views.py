@@ -133,23 +133,25 @@ def submit(payload):
     try:
         data = request.get_json()
         tutorial = Unpublished_Tutorial(
-                author_id=data.get('author_id'),
+                author_id=context['id'],
                 title=data.get('title'),
                 text=data.get('text'),
                 under_review=True
                 )
-        for tag_name in data.get('tags'):
-            tag = Tag.query.filter_by(name=tag_name).one_or_none()
-            if not tag:
-                tag = Tag(name=tag_name)
-                tag.insert()
-            tutorial.tags.append(tag)
+        if data.get('tags'):
+            for tag_name in data.get('tags'):
+                tag = Tag.query.filter_by(name=tag_name).one_or_none()
+                if not tag:
+                    tag = Tag(name=tag_name)
+                    tag.insert()
+                tutorial.tags.append(tag)
         tutorial.insert()
         result = tutorial.long()
     except:
         abort(500)
     return jsonify({
         'success': True,
+        'user_id': tutorial.author_id,
         'tutorial': result
     }), 200
 
@@ -168,12 +170,13 @@ def edit(payload, tutorial_id):
         tutorial.under_review=True
         for tag in tutorial.tags:
             tutorial.tags.remove(tag)
-        for tag_name in data.get('tags'):
-            tag = Tag.query.filter_by(name=tag_name).one_or_none()
-            if not tag:
-                tag = Tag(name=tag_name)
-                tag.insert()
-            tutorial.tags.append(tag)
+        if data.get('tags'):
+            for tag_name in data.get('tags'):
+                tag = Tag.query.filter_by(name=tag_name).one_or_none()
+                if not tag:
+                    tag = Tag(name=tag_name)
+                    tag.insert()
+                tutorial.tags.append(tag)
         tutorial.update()
     except:
         abort(500)
@@ -189,7 +192,7 @@ def edit(payload, tutorial_id):
 @requires_auth('submit:tutorial')
 def get_submitted_list(payload):
     context = user_context(payload)
-    tutorials = Tutorial.query.filter_by(author_id=context['id'])
+    tutorials = Unpublished_Tutorial.query.filter_by(author_id=context['id'])
     tutorials = tutorials.filter_by(under_review=True).all()
     result = [tutorial.short() for tutorial in tutorials]
     return jsonify({
@@ -198,13 +201,13 @@ def get_submitted_list(payload):
         }), 200 
     
 # Get long form submitted tutorial
-@bp.route('/submitted<int:tutorial_id>', methods=['GET'])
+@bp.route('/submitted/<int:tutorial_id>', methods=['GET'])
 @requires_auth('submit:tutorial')
 def get_submitted_tutorial(payload, tutorial_id):
     context = user_context(payload)
-    tutorial = Unpublished_Tutorial.query.get_or_404()
+    tutorial = Unpublished_Tutorial.query.get_or_404(tutorial_id)
     result = tutorial.long()
-    if context['id'] != result.author_id:
+    if context['id'] != result['author_id']:
         abort(403)
     return jsonify({
         'success': True,

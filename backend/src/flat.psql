@@ -241,21 +241,6 @@ d6bb7ce4cb39
 --
 
 COPY public.published_tutorials (id, author_id, title, text) FROM stdin;
-3	1	poop tut	The TEXT
-5	1	poop tut	The TEXT
-7	1	poop tut	The TEXT
-1	1	title	text
-2	1	title	text
-4	1	title	text
-17	1	title	text
-19	1	title	text
-21	1	title	text
-23	1	title	text
-25	1	title	text
-27	1	title	text
-29	1	title	text
-31	1	title	text
-33	1	title	text
 \.
 
 
@@ -264,12 +249,6 @@ COPY public.published_tutorials (id, author_id, title, text) FROM stdin;
 --
 
 COPY public.published_tutorials_tags (left_id, right_id) FROM stdin;
-3	1
-3	2
-5	1
-5	3
-7	1
-7	4
 \.
 
 
@@ -278,10 +257,6 @@ COPY public.published_tutorials_tags (left_id, right_id) FROM stdin;
 --
 
 COPY public.tags (id, name) FROM stdin;
-1	FLASK
-2	POSTGRES
-3	Hamsters
-4	Poodles
 \.
 
 
@@ -290,84 +265,6 @@ COPY public.tags (id, name) FROM stdin;
 --
 
 COPY public.unpublished_tutorials (id, author_id, under_review, title, text, reviewer_notes) FROM stdin;
-2	1	t	poop tut	The TEXT	\N
-3	1	f	poop tut	The TEXT	\N
-4	1	t	poop tut	The TEXT	\N
-5	1	f	poop tut	The TEXT	\N
-6	1	t	poop tut	The TEXT	\N
-7	1	f	poop tut	The TEXT	\N
-10	1	f	title	text	\N
-11	1	f	title	text	\N
-12	1	f	title	text	\N
-13	1	f	title	text	\N
-14	1	f	title	text	\N
-15	1	f	title	text	\N
-17	1	f	title	text	\N
-19	1	f	title	text	\N
-21	1	f	title	text	\N
-23	1	f	title	text	\N
-25	1	f	title	text	\N
-27	1	f	title	text	\N
-29	1	f	title	text	\N
-31	1	f	title	text	\N
-33	1	f	title	text	\N
-35	1	f	title	text	\N
-37	1	f	title	text	\N
-39	1	f	title	text	\N
-41	1	f	title	text	\N
-43	1	f	title	text	\N
-45	1	f	title	text	\N
-47	1	f	title	text	\N
-49	1	f	title	text	notes
-51	1	f	title	text	notes
-52	1	t	title	text	\N
-54	1	f	title	text	notes
-55	1	t	title	text	\N
-57	1	f	title	text	notes
-58	1	t	title	text	\N
-60	1	f	title	text	notes
-61	1	t	title	text	\N
-63	1	f	title	text	notes
-64	1	t	title	text	\N
-65	1	t	title	text	\N
-67	1	f	title	text	notes
-68	1	t	title	text	\N
-70	1	f	title	text	notes
-71	1	t	title	text	\N
-73	1	f	title	text	notes
-74	1	t	title	text	\N
-76	1	f	title	text	notes
-77	1	t	title	text	\N
-79	1	f	title	text	notes
-80	1	t	title	text	\N
-81	1	t	title	text	\N
-83	1	f	title	text	notes
-84	1	t	title	text	\N
-85	1	t	title	text	\N
-87	1	f	title	text	notes
-88	1	t	title	text	\N
-89	1	t	title	text	\N
-91	1	f	title	text	notes
-92	1	t	title	text	\N
-93	1	t	title	text	\N
-95	1	f	title	text	notes
-96	1	t	title	text	\N
-97	1	t	title	text	\N
-99	1	f	title	text	notes
-100	1	t	title	text	\N
-101	1	t	title	text	\N
-103	1	f	title	text	notes
-104	1	t	title	text	\N
-105	1	t	title	text	\N
-107	1	f	title	text	notes
-108	1	t	title	text	\N
-109	1	t	title	text	\N
-111	1	f	title	text	notes
-112	1	t	title	text	\N
-113	1	t	title	text	\N
-115	1	f	title	text	notes
-116	1	t	title	text	\N
-117	1	t	title	text	\N
 \.
 
 
@@ -376,18 +273,6 @@ COPY public.unpublished_tutorials (id, author_id, under_review, title, text, rev
 --
 
 COPY public.unpublished_tutorials_tags (left_id, right_id) FROM stdin;
-2	2
-2	1
-3	1
-3	2
-4	1
-4	3
-5	1
-5	3
-6	1
-6	4
-7	1
-7	4
 \.
 
 
@@ -396,9 +281,6 @@ COPY public.unpublished_tutorials_tags (left_id, right_id) FROM stdin;
 --
 
 COPY public.users (id, auth0_id, username, email) FROM stdin;
-1	auth0|5ea698ba6b69bc0c12d928d6	brett#1	brett@agyx.org
-2	auth0|5f86579833e659006e522db2	admin#2	admin@agyx.org
-3	auth0|5f8657d986e0320068819ffa	moderator#3	moderator@agyx.org
 \.
 
 
@@ -406,28 +288,28 @@ COPY public.users (id, auth0_id, username, email) FROM stdin;
 -- Name: published_tutorials_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.published_tutorials_id_seq', 4, true);
+SELECT pg_catalog.setval('public.published_tutorials_id_seq', 1, false);
 
 
 --
 -- Name: tags_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.tags_id_seq', 4, true);
+SELECT pg_catalog.setval('public.tags_id_seq', 1, false);
 
 
 --
 -- Name: unpublished_tutorials_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.unpublished_tutorials_id_seq', 117, true);
+SELECT pg_catalog.setval('public.unpublished_tutorials_id_seq', 1, false);
 
 
 --
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 3, true);
+SELECT pg_catalog.setval('public.users_id_seq', 1, false);
 
 
 --

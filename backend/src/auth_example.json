@@ -1,0 +1,5 @@
+{
+	"administrator":"Bearer JWT",
+       "moderator": "Bearer JWT", 
+       "registered_user": "Bearer JWT"
+}
