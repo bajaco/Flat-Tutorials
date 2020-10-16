@@ -2,27 +2,34 @@ import unittest
 import json
 from flask_sqlalchemy import SQLAlchemy
 from src import create_app
-from src.models import User
+from src.models import User, Published_Tutorial, Unpublished_Tutorial
 class FlatTutorialsTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.app = create_app()
-        self.client = self.app.test_client
-        self.database_name = 'flat-tutorials'
-        self.database_path = 'postgresql://{}/{}'.format('localhost:5432',
-                self.database_name)
+        self.app = create_app(test_config=True)
+        self.client = self.app.test_client 
+        database_name = 'flat-tutorials-test'
+        database_path = "postgres://{}@{}/{}".format('postgres',
+                'localhost:5432', database_name)
+        self.app.config["SQLALCHEMY_DATABASE_URI"] = database_path
         
-
-        with self.app.app_context():
-            self.db = SQLAlchemy()
-            self.db.init_app(self.app)
-            self.db.create_all()
+       
         with open('auth.json') as f:
             self.tokens = json.loads(f.read())
             
             #get a user that exists for testing purposes
             user = User.query.first()
             self.user_id = user.id
+
+            #article placeholder
+            self.tutorial_id = None
+    
+    def addTutorial(self):
+        tutorial = Unpublished_Tutorial(title='title',text='text',under_review=True,
+                author_id=self.user_id)
+        tutorial.insert()
+        self.tutorial_id = tutorial.id
+    
 
     def tearDown(self):
         pass
@@ -35,55 +42,123 @@ class FlatTutorialsTestCase(unittest.TestCase):
         res = self.client().get('/admin/users',
                 headers={'Authorization':self.tokens['administrator']})
         data = json.loads(res.data)
+        self.assertTrue(len(data['users']))
+        self.assertTrue(data['success'])
         self.assertEqual(res.status_code, 200)
 
     def test_admin_delete_tutorial(self):
-        res = self.client().delete('/admin/tutorial/<int:tutorial_id>')
-        pass
-
+        tutorial = Unpublished_Tutorial(title='title',text='text',under_review=False,
+                author_id=self.user_id)
+        tutorial.insert()
+        self.tutorial_id = tutorial.id
+        tutorial = Published_Tutorial(id=self.tutorial_id,
+                title='title',text='text',author_id=self.user_id)
+        tutorial.insert()
+        self.tutorial_id = tutorial.id
+        res = self.client().delete('/admin/tutorial/{}'.format(self.tutorial_id),
+                headers={'Authorization':self.tokens['administrator']})
+        data = json.loads(res.data)
+        self.assertTrue(data['success'])
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['deleted_id'], self.tutorial_id)
+        
     def test_admin_unpublish_tutorial(self):
-        res = self.client().patch('unpublish_tutorial')
-        pass
+        tutorial = Unpublished_Tutorial(title='title',text='text',under_review=False,
+                author_id=self.user_id)
+        tutorial.insert()
+        self.tutorial_id = tutorial.id
+        tutorial = Published_Tutorial(id=self.tutorial_id,
+                title='title',text='text',author_id=self.user_id)
+        tutorial.insert()
+        submit_data = {
+                'reviewer_notes': 'notes'
+                }
+        self.tutorial_id = tutorial.id
+        res = self.client().patch('/admin/unpublish/{}'.format(self.tutorial_id),
+                json = submit_data,
+                headers={'Authorization':self.tokens['administrator']})
+        data = json.loads(res.data)
+        self.assertTrue(data['success'])
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['unpublished_id'], self.tutorial_id)
+    
+
 
     ###################
     # moderator tests #
     ###################
-    def test_moderator_get_submitted_list(self):
-        res = self.client().get('/submitted')
-        pass
-
-    def test_moderator_get_submitted_tutorial(self):
-        res = self.client().get('/submitted<int:tutorial_id>')
-        pass
-
     def test_moderator_get_unpublished_list(self):
-        res = self.client().get('/unpublished')
-        pass
+        self.addTutorial()
+        
+        res = self.client().get('/unpublished',
+                headers={'Authorization': self.tokens['moderator']})
+        data = json.loads(res.data)
+        self.assertTrue(data['success'])
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(len(data['tutorials']))
 
+    
     def test_moderator_get_unpublished_tutorial(self):
-        res = self.client().get('/unpublished/<int:tutorial_id>')
-        pass
-
+        
+        self.addTutorial()
+        
+        res = self.client().get('/unpublished/{}'.format(self.tutorial_id),
+                headers={'Authorization': self.tokens['moderator']})
+        data = json.loads(res.data)
+       
+        self.assertTrue(data['success'])
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['tutorial']['id'], self.tutorial_id) 
+    
     def test_moderator_publish(self):
-        res = self.client().get('/publish/<int:tutorial_id>')
-        pass
+        self.addTutorial()
+        
+        res = self.client().get('/unpublished/{}'.format(self.tutorial_id),
+                headers={'Authorization': self.tokens['moderator']})
+        data = json.loads(res.data)
 
+        self.assertTrue(data['success'])
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['tutorial']['id'], self.tutorial_id)
+        
+        
+    
     def test_moderator_deny(self):
-        res = self.client().patch('/deny/<int:tutorial_id>')
-        pass
-
+        self.addTutorial()
+        submit_data = {'review_notes': 'notes'}
+        res = self.client().patch('/deny/{}'.format(self.tutorial_id),
+                json = submit_data,
+                headers={'Authorization': self.tokens['moderator']})
+        data = json.loads(res.data)
+        self.assertTrue(data['success'])
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['denied_id'], self.tutorial_id)
+        
+    
     def test_moderator_list_users(self):
         res = self.client().get('/admin/users')
-        pass
+        data = json.loads(res.data)
+        self.assertFalse(data['success'])
+        self.assertEqual(res.status_code, 401)
 
     def test_moderator_delete_tutorial(self):
-        res = self.client().delete('/admin/tutorial/<int:tutorial_id>')
-        pass
+        self.addTutorial()
+        
+        res = self.client().delete('/admin/tutorial/{}'.format(self.tutorial_id),
+                headers={'Authorization': self.tokens['moderator']})
+        data = json.loads(res.data)
+        self.assertFalse(data['success'])
+        self.assertEqual(res.status_code, 401)
 
     def test_moderator_unpublish_tutorial(self):
-        res = self.client().patch('unpublish_tutorial')
-        pass
+        self.addTutorial()
+        res = self.client().patch('/admin/unpublish/{}'.format(self.tutorial_id),
+                headers={'Authorization': self.tokens['moderator']})
+        data = json.loads(res.data)
+        self.assertFalse(data['success'])
+        self.assertEqual(res.status_code, 401)
 
+    
     ##################
     # end_user tests #
     ##################
@@ -152,6 +227,6 @@ class FlatTutorialsTestCase(unittest.TestCase):
     def test_public_list_users(self):
         res = self.client().get('/admin/users')
         pass
-
+    
 if __name__ == '__main__':
     unittest.main()

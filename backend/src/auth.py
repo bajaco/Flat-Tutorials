@@ -3,7 +3,7 @@ from flask import request, _request_ctx_stack
 from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
-
+from werkzeug.exceptions import abort
 
 
 AUTH0_DOMAIN = 'agyx.auth0.com'

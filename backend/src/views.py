@@ -352,7 +352,7 @@ def delete_tutorial(payload,tutorial_id):
 # Unpublish tutorial.
 # Similar to delete tutorial but does not delete the unpublished version.
 @bp.route('/admin/unpublish/<int:tutorial_id>', methods=['PATCH'])
-@requires_auth('unpublish_tutorial')
+@requires_auth('unpublish:tutorial')
 def unpublish_tutorial(payload,tutorial_id):
     context = user_context(payload)
     data = request.get_json()
