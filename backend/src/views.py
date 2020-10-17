@@ -90,8 +90,7 @@ def get_published_list_by_author(author_id):
 #get all shortform list by tag
 @bp.route('/published/tags/<string:tag>', methods=['GET'])
 def get_published_by_tag(tag):
-    search = "%{}%".format(tag)
-    tutorials = Tag.query.filter(Tag.name.ilike(search)).first_or_404().published_tutorials
+    tutorials = Tag.query.filter(func.lower(Tag.name) == tag.lower()).first_or_404().published_tutorials
     if not tutorials:
         abort(404)
     result = [tut.short() for tut in tutorials]
@@ -103,13 +102,8 @@ def get_published_by_tag(tag):
 #get all shortform list by tags
 @bp.route('/published/tags/<string:tag1>/<string:tag2>', methods=['GET'])
 def get_published_by_tags(tag1,tag2):
-    search1 = "%{}%".format(tag1)
-    search2 = "%{}%".format(tag2)
-    
-    #Not happy about this, but flask-sqlalchemy does not seem to allow
-    #calling ilike on a relationship: no way to call on Published_Tutorial.tags
-    res1 = Tag.query.filter(Tag.name.ilike(search1)).first_or_404().published_tutorials
-    res2 = Tag.query.filter(Tag.name.ilike(search2)).first_or_404().published_tutorials
+    res1 = Tag.query.filter(func.lower(Tag.name) == tag1.lower()).first_or_404().published_tutorials
+    res2 = Tag.query.filter(func.lower(Tag.name) == tag2.lower()).first_or_404().published_tutorials
     tutorials = [tut for tut in res1 if tut in res2]
     if not tutorials:
         abort(404)

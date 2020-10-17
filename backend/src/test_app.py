@@ -3,7 +3,7 @@ import json
 from flask_sqlalchemy import SQLAlchemy
 from src import create_app
 from src.models import User, Published_Tutorial, Unpublished_Tutorial
-
+from pathlib import Path
 class FlatTutorialsTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -14,8 +14,8 @@ class FlatTutorialsTestCase(unittest.TestCase):
                 'localhost:5432', database_name)
         self.app.config["SQLALCHEMY_DATABASE_URI"] = database_path
         
-       
-        with open('auth.json') as f:
+        filepath = Path(__file__).parent.absolute() / 'auth.json'
+        with open(filepath) as f:
             self.tokens = json.loads(f.read())
             
             #submit a tutorial from registered user
