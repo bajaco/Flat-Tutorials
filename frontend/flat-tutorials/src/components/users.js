@@ -26,18 +26,23 @@ const Users = () => {
   if (!users) {
     return (
       <div>
-        <h5> No users available </h5>
+        <h5>No users available</h5>
+      </div>
+    );
+  } else if (!users.success) {
+    return (
+      <h5>bad request</h5>
+    );
+  } else {
+
+    return (
+      <div> 
+      {users['users'].map((user) => (
+        <h1>{ user.username }</h1>
+      ))}
       </div>
     );
   }
-
-  return (
-    <div> 
-    {users['users'].map((user) => (
-      <h1>{ user.username }</h1>
-    ))}
-    </div>
-  );
 };
  
 
