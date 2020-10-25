@@ -3,8 +3,9 @@ import React, {useEffect, Component} from 'react';
 import Header from './components/header';
 import Nav from './components/nav.js';
 import Users from './components/users.js';
-import SignupButton from './components/signup-button.js';
+import AccountLinks from './components/account-links.js';
 import Profile from './components/profile.js';
+import TutorialsList from './components/tutorials-list.js';
 import { Auth0Provider } from '@auth0/auth0-react';
 
 
@@ -37,11 +38,26 @@ class App extends Component {
         
       >
         <React.Fragment>
+          <ul>Needed components:
+            <li>tutorial</li>
+            <li>submitted-list</li>
+            <li>unpublished-list</li>
+            <li>submit</li>
+            <li>edit</li>
+            <li>approve/deny</li>
+          </ul>
+            
+
+          header
           <Header />
-          <SignupButton />
+          account links
+          <AccountLinks />
+          nav
           <Nav />
+          users
           <Users />
-          
+          tutorials list
+          <TutorialsList /> 
         </React.Fragment>
       </Auth0Provider>
     )

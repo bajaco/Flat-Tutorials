@@ -4,6 +4,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 const Users = () => {
   const { getAccessTokenSilently } = useAuth0();
   const [ users, setUsers ] = useState()
+  
   useEffect(() => {
     (async () => {
       try {
@@ -23,25 +24,20 @@ const Users = () => {
     })();
   }, [getAccessTokenSilently]);
   
-  if (!users) {
-    return (
-      <div>
-        <h5>No users available</h5>
-      </div>
-    );
-  } else if (!users.success) {
-    return (
-      <h5>bad request</h5>
-    );
+  if (users) {
+    if(users['success']) {
+      return (
+        <div> 
+        {users['users'].map((user) => (
+          <h1>{ user.username }</h1>
+        ))}
+        </div>
+      );
+    } else { 
+      return(<div>no access</div>);
+    }
   } else {
-
-    return (
-      <div> 
-      {users['users'].map((user) => (
-        <h1>{ user.username }</h1>
-      ))}
-      </div>
-    );
+    return (<div><h1>loading . . .</h1></div>);
   }
 };
  
