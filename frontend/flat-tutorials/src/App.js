@@ -33,9 +33,7 @@ class App extends Component {
             />  
             <Header />
             <Switch>
-              <Route path="/tags/:tagname">
-                <TagsTutorials />
-              </Route>
+              <Route path="/tags/:tagname" children={<TagsTutorials />} />
               <Route path='/tutorial1'>
                 <PublicTutorial />
               </Route>

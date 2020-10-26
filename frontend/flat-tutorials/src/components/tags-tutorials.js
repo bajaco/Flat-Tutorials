@@ -16,7 +16,7 @@ const TagsTutorials = () =>{
         console.error(e);
       }
     })();
-  }, []);
+  }, [tagname]);
 
   if (!tutorials) {
     return (
