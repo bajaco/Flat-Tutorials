@@ -1,4 +1,5 @@
 import React from "react";
+import Button from 'react-bootstrap/Button';
 import { useAuth0 } from "@auth0/auth0-react";
 
 const AccountLinks = () => {
@@ -7,8 +8,8 @@ const AccountLinks = () => {
   if (!isAuthenticated) {
     return (
       <div id="account-links">
-        <button
-          className="btn btn-primary btn-block"
+        <Button
+          variant='outline-dark'
           onClick={() =>
             loginWithRedirect({
               screen_hint: "login",
@@ -16,15 +17,15 @@ const AccountLinks = () => {
           }
         >
           Login/Signup
-        </button>
+        </Button>
       </div>
     );
   }
 
   return (
     <div id="account-links">
-      <button
-        className="btn btn-primary btn-block"
+      <Button
+        variant='outline-dark' 
         onClick={() =>
           logout({
             screen_hint: "logout",
@@ -32,7 +33,7 @@ const AccountLinks = () => {
         }
       >
         Logout
-      </button>
+      </Button>
     </div>
   );
 

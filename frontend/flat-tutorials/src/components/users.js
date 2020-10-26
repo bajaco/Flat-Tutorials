@@ -25,19 +25,21 @@ const Users = () => {
   }, [getAccessTokenSilently]);
   
   if (users) {
-    if(users['success']) {
-      return (
-        <div> 
-        {users['users'].map((user) => (
-          <h1>{ user.username }</h1>
-        ))}
-        </div>
-      );
-    } else { 
-      return(<div>no access</div>);
-    }
+ 
+    return (
+      <div> 
+      {users['users'].map((user) => (
+        <h1>{ user.username }</h1>
+      ))}
+      </div>
+    );
+    
   } else {
-    return (<div><h1>loading . . .</h1></div>);
+    return (
+      <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    );
   }
 };
  

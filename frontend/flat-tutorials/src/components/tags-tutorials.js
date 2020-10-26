@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react'
+import { useParams, Link } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import Badge from 'react-bootstrap/Badge';
-import { Link } from 'react-router-dom';
 
-const TutorialsList = () => {
-  const { getAccessTokenSilently } = useAuth0();
+const TagsTutorials = () =>{
   const [ tutorials, setTutorials ] = useState()
-
+  const { tagname } = useParams();
   useEffect(() => {
     (async () => {
       try {
-        const response = await fetch('http://localhost:5000/published');
+        
+        const response = await fetch('http://localhost:5000/published/tags/' + tagname);
         setTutorials(await response.json());
       } catch(e) {
         console.error(e);
@@ -27,7 +27,9 @@ const TutorialsList = () => {
   }
 
   return (
+    
     <div id="tutorials-list"> 
+    
       {tutorials['tutorials'].map((tutorial) => (
         <div class="card">
           <div class="card-body">
@@ -42,7 +44,7 @@ const TutorialsList = () => {
                 </Link>
                 {' '}
               </>
-            ))}
+            ))} 
           </div>
         </div>
       ))}
@@ -50,4 +52,4 @@ const TutorialsList = () => {
   );
   
 }
-export default TutorialsList
+export default TagsTutorials
