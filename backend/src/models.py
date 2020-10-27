@@ -48,7 +48,9 @@ class User(db.Model):
         db.session.commit()
 
     def description(self):
-        return dictit(self,'id', 'auth0_id','username','email')
+        description = dictit(self,'id', 'auth0_id','username','email')
+        description['published'] = len(self.published)
+        return description
 
 # Association table between unpublished tutorials and tags
 unpublished_tutorial_tag = db.Table('unpublished_tutorials_tags', db.Model.metadata,

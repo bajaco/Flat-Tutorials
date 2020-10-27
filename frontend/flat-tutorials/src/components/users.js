@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useAuth0 } from '@auth0/auth0-react';
+import { Redirect } from 'react-router-dom';
 
 const Users = () => {
-  const { getAccessTokenSilently } = useAuth0();
-  const [ users, setUsers ] = useState()
-  
+  const { getAccessTokenSilently, user } = useAuth0();
+  const [ users, setUsers ] = useState();
+  const [ authError, setAuthError] = useState();
   useEffect(() => {
     (async () => {
       try {
@@ -19,17 +20,34 @@ const Users = () => {
         });
         setUsers(await response.json());
       } catch(e) {
-        console.error(e);
+        setAuthError(true);
       }
     })();
   }, [getAccessTokenSilently]);
-  
+   
+
+  if (authError) {
+    return(
+      <Redirect to='/' />
+    );
+  }
+
   if (users) {
- 
+    if (!users['success']){
+      return (<h3>Unauthorized</h3>)
+    }
     return (
       <div> 
       {users['users'].map((user) => (
-        <h1>{ user.username }</h1>
+        <>
+          <h3>{ user.username }</h3>
+          <ul>
+            <li>id: {user['id']}</li>
+            <li>auth0_id: {user['auth0_id']}</li>
+            <li>email: {user['email']}</li>
+            <li>published: {user['published']}</li>
+          </ul>
+        </>
       ))}
       </div>
     );

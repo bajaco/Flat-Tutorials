@@ -22,7 +22,7 @@ class App extends Component {
           responseType='token id_token'
           redirectUri={window.location.origin}
           audience='http://localhost:5000/'
-          scope='openid email profile'
+          scope='openid email profile users'
         >
           <Container>
             <link
@@ -34,9 +34,7 @@ class App extends Component {
             <Header />
             <Switch>
               <Route path="/tags/:tagname" children={<TagsTutorials />} />
-              <Route path='/tutorial1'>
-                <PublicTutorial />
-              </Route>
+              <Route path='/tutorials/:tutorialid' children={<PublicTutorial />} />
               <Route path='/users'>
                 <Users />
               </Route>

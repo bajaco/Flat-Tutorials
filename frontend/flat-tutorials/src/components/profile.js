@@ -4,7 +4,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 const Profile = () => {
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
   const [userMetadata, setUserMetadata] = useState(null);
-
+  console.log(user);
   return (
     isAuthenticated && (
       <div>
