@@ -3,20 +3,29 @@ import { useAuth0 } from '@auth0/auth0-react';
 import Badge from 'react-bootstrap/Badge';
 import { Link } from 'react-router-dom';
 
-const TutorialsList = () => {
+const ReviewList = () => {
   const { getAccessTokenSilently } = useAuth0();
   const [ tutorials, setTutorials ] = useState()
 
   useEffect(() => {
     (async () => {
       try {
-        const response = await fetch('http://localhost:5000/published');
+        const token = await getAccessTokenSilently({
+          audience: 'http://localhost:5000/',
+          scope: 'view:unpublished_list',
+        });
+
+        const response = await fetch('http://localhost:5000/unpublished', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setTutorials(await response.json());
       } catch(e) {
         console.error(e);
       }
     })();
-  }, []);
+  }, [getAccessTokenSilently]);
 
   if (!tutorials) {
     return (
@@ -60,4 +69,4 @@ const TutorialsList = () => {
     );
   }
 }
-export default TutorialsList
+export default ReviewList

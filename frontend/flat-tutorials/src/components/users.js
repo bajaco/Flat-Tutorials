@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useAuth0 } from '@auth0/auth0-react';
 import { Redirect } from 'react-router-dom';
+import Card from 'react-bootstrap/Card';
 
 const Users = () => {
   const { getAccessTokenSilently, user } = useAuth0();
@@ -39,15 +40,17 @@ const Users = () => {
     return (
       <div> 
       {users['users'].map((user) => (
-        <>
-          <h3>{ user.username }</h3>
+        <Card>
+          <Card.Header>
+            { user.username }
+          </Card.Header>
           <ul>
             <li>id: {user['id']}</li>
             <li>auth0_id: {user['auth0_id']}</li>
             <li>email: {user['email']}</li>
             <li>published: {user['published']}</li>
           </ul>
-        </>
+        </Card>
       ))}
       </div>
     );

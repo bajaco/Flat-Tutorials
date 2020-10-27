@@ -32,15 +32,17 @@ const TagsTutorials = () =>{
     );
   } else {
     return (
-       
       <div id="tutorials-list"> 
         {tutorials['tutorials'].map((tutorial) => (
-          <div class="card">
-            <div class="card-body">
+          <div class="card mb-sm-2">
+            <div class="card-body d-flex flex-row justify-content-between">
               <Link class='text-dark' to={'/tutorials/' + tutorial.id}>
                 <h5 class="card-title">{tutorial.title}</h5>
               </Link>
-              <i>submitted by {tutorial.author} </i>
+              
+            </div>
+            <div class='card-footer d-flex flex-row justify-content-between'>
+              <div>
               {tutorial['tags'].map((tag) => (       
                 <>
                   <Link to={'/tags/' + tag}>
@@ -50,13 +52,14 @@ const TagsTutorials = () =>{
                   </Link>
                   {' '}
                 </>
-              ))} 
+              ))}
+              </div>
+              <i>by {tutorial.author}  </i>
             </div>
           </div>
         ))}
       </div>
     );
   }
-  
 }
 export default TagsTutorials

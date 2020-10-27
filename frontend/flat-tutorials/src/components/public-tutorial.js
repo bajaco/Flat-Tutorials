@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Link, useParams } from 'react-router-dom';
 import Badge from 'react-bootstrap/Badge';
+import Card from 'react-bootstrap/Card';
+import ReactMarkdown from 'react-markdown';
 
 const PublicTutorial = () => {
  
@@ -31,10 +33,19 @@ const PublicTutorial = () => {
   }
 
   return (
-    <div class='tutorial'>  
-      <div class='tutorial-header'>
-        <h3>{ tutorial['tutorial']['title'] }</h3>
-        {tutorial['tutorial']['tags'].map((tag) => (
+    <Card>  
+      <Card.Body>
+        <Card.Title>
+          {tutorial['tutorial']['title']}
+        </Card.Title>
+        <Card.Text>
+          <ReactMarkdown>
+            {tutorial['tutorial']['text']}
+          </ReactMarkdown>
+        </Card.Text>
+      </Card.Body>
+      <Card.Footer>
+       {tutorial['tutorial']['tags'].map((tag) => (
           <>
             <Link to={'/tags/' + tag}>
               <Badge variant='dark'>
@@ -42,12 +53,10 @@ const PublicTutorial = () => {
               </Badge>
             </Link>
           {' '}
-          </>
-          
+          </>           
         ))}
-      </div> 
-      <p>{tutorial['tutorial']['text']}</p>
-    </div>
+      </Card.Footer>
+    </Card>
   );
   
 }

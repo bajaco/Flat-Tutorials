@@ -133,7 +133,7 @@ def submit(payload):
                 under_review=True
                 )
         if data.get('tags'):
-            for tag_name in data.get('tags'):
+            for tag_name in data.get('tags').split(', '):
                 tag = Tag.query.filter_by(name=tag_name).one_or_none()
                 if not tag:
                     tag = Tag(name=tag_name)
