@@ -8,6 +8,7 @@ import PublicTutorial from './components/public-tutorial.js';
 import TagsTutorials from './components/tags-tutorials.js';
 import Create from './components/create.js';
 import ReviewList from './components/review-list.js';
+import ReviewTutorial from './components/review-tutorial.js';
 import { Auth0Provider } from '@auth0/auth0-react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -24,7 +25,7 @@ class App extends Component {
           responseType='token id_token'
           redirectUri={window.location.origin}
           audience='http://localhost:5000/'
-          scope='openid email profile list:users submit:tutorial view:unpublished_list'
+          scope='openid email profile list:users submit:tutorial view:unpublished_list view:unpublished'
         >
           <Container>
             <link
@@ -37,6 +38,7 @@ class App extends Component {
             <Switch>
               <Route path="/tags/:tagname" children={<TagsTutorials />} />
               <Route path='/tutorials/:tutorialid' children={<PublicTutorial />} />
+              <Route path='/review/:tutorialid' children={<ReviewTutorial />} />
               <Route path='/users'>
                 <Users />
               </Route>

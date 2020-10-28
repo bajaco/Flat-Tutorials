@@ -43,7 +43,7 @@ const ReviewList = () => {
         {tutorials['tutorials'].map((tutorial) => (
           <div class="card mb-sm-2">
             <div class="card-body d-flex flex-row justify-content-between">
-              <Link class='text-dark' to={'/tutorials/' + tutorial.id}>
+              <Link class='text-dark' to={'/review/' + tutorial.id}>
                 <h5 class="card-title">{tutorial.title}</h5>
               </Link>
               
