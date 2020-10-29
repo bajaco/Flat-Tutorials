@@ -1,17 +1,23 @@
+import os
 import unittest
 import json
 from flask_sqlalchemy import SQLAlchemy
 from src import create_app
 from src.models import User, Published_Tutorial, Unpublished_Tutorial
 from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv('../flaskenv')
+
 class FlatTutorialsTestCase(unittest.TestCase):
 
     def setUp(self):
         self.app = create_app(test_config=True)
         self.client = self.app.test_client 
-        database_name = 'flat-tutorials-test'
-        database_path = "postgres://{}@{}/{}".format('postgres',
-                'localhost:5432', database_name)
+        TEST_DATABASE_NAME = os.environ.get('TEST_DATABASE_NAME')
+        DATABASE_LOCATION = os.environ.get('DATABASE_LOCATION')
+        DATABASE_USER = os.environ.get('DATABASE_USER')
+        database_path = "postgres://{}@{}/{}".format(DATABASE_USER,
+                DATABASE_LOCATION, TEST_DATABASE_NAME)
         self.app.config["SQLALCHEMY_DATABASE_URI"] = database_path
         
         filepath = Path(__file__).parent.absolute() / 'auth.json'

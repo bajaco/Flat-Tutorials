@@ -5,11 +5,6 @@ from jose import jwt
 from urllib.request import urlopen
 from werkzeug.exceptions import abort
 
-
-AUTH0_DOMAIN = 'agyx.auth0.com'
-ALGORITHMS = ['RS256']
-API_AUDIENCE = 'http://localhost:5000/'
-
 # AuthError Exception
 '''
 AuthError Exception

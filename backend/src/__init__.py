@@ -3,6 +3,7 @@ from flask_cors import CORS
 from flask import jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+import os
 
 
 db = SQLAlchemy()
@@ -10,12 +11,18 @@ db = SQLAlchemy()
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     CORS(app)
-    database_name = 'flat-tutorials'
-    database_path = "postgres://{}@{}/{}".format('postgres',
-            'localhost:5432', database_name)
+    AUTH0_DOMAIN = os.environ.get('AUTH0_DOMAIN')
+    ALGORITHMS = os.environ.get('ALGORITHMS')
+    API_AUDIENCE = os.environ.get('API_AUDIENCE')
+    DATABASE_NAME = os.environ.get('DATABASE_NAME')
+    DATABASE_USER = os.environ.get('DATABASE_USER')
+    DATABASE_LOCATION = os.environ.get('DATABASE_LOCATION')
+    
+    database_path = "postgres://{}@{}/{}".format(DATABASE_USER,
+            DATABASE_LOCATION, DATABASE_NAME)
     app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    app.config['SECRET_KEY'] = 'vgT0?(XKnWvJfmnRW/:e' 
+    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') 
     db.app = app
     db.init_app(app)
     migrate = Migrate(app,db)
