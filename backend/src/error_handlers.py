@@ -11,7 +11,7 @@ def forbidden(error):
         'error': 403,
         'message': 'resource is forbidden'
         }), 403
-'''
+
 @bp.app_errorhandler(401)
 def unauthorized(error):
     return jsonify({
@@ -19,7 +19,7 @@ def unauthorized(error):
         'error': 401,
         'message': 'unauthorized'
         }), 401
-'''
+
 
 @bp.app_errorhandler(404)
 def not_found(error):

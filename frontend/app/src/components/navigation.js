@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { Redirect } from 'react-router-dom';
 import PublicMenu from './public-menu.js';
 import AdminMenu from './admin-menu.js';
 import ModMenu from './mod-menu.js';
@@ -18,6 +18,8 @@ const Navigation = () => {
       return (<ModMenu />);
     } else if (user[process.env.REACT_APP_ROLES_URL].includes('registered_user')) {
       return (<RegisteredMenu />);
+    } else {
+      return (<Redirect to='/'>);
     }
   }
 }
