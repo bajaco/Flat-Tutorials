@@ -1,6 +1,7 @@
+
 import React, {Component} from 'react';
 import { BrowserRouter as Router,
-  Switch, Route, Link } from 'react-router-dom';
+  Switch, Route } from 'react-router-dom';
 import Header from './components/header';
 import Users from './components/users.js';
 import TutorialsList from './components/tutorials-list.js';
@@ -12,24 +13,23 @@ import Create from './components/create.js';
 import ReviewList from './components/review-list.js';
 import ReviewTutorial from './components/review-tutorial.js';
 import { Auth0Provider } from '@auth0/auth0-react';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 
-class App extends Component {
 
+class App extends Component {
   render() {
     return (
       <Router>
         <Auth0Provider
-          domain='agyx.auth0.com'
-          clientId='btQeJ55ezH0ejA6JSDTTzeTR5NZ4fv5b'
-          responseType='token id_token'
+          domain={process.env.REACT_APP_DOMAIN}
+          clientId={process.env.REACT_APP_CLIENT_ID}
+          responseType={process.env.REACT_APP_RESPONSE_TYPE}
           redirectUri={window.location.origin}
-          audience='http://localhost:5000/'
-          scope='openid email profile list:users submit:tutorial view:unpublished_list view:unpublished edit:tutorial'
+          audience={process.env.REACT_APP_AUDIENCE}
+          scope={process.env.REACT_APP_SCOPE}
         >
           <Container>
+            <h1>{process.env.REACT_APP_DOMAIN}</h1>
             <link
               rel="stylesheet"
               href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"

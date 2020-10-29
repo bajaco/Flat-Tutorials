@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { useAuth0 } from '@auth0/auth0-react';
 import Badge from 'react-bootstrap/Badge';
 import { Link } from 'react-router-dom';
 
 const TutorialsList = () => {
-  const { getAccessTokenSilently } = useAuth0();
   const [ tutorials, setTutorials ] = useState()
 
   useEffect(() => {
     (async () => {
       try {
-        const response = await fetch('http://localhost:5000/published');
+        const response = await fetch(process.env.REACT_APP_API_URL + '/published');
         setTutorials(await response.json());
       } catch(e) {
         console.error(e);
@@ -60,4 +58,4 @@ const TutorialsList = () => {
     );
   }
 }
-export default TutorialsList
+export default TutorialsList;

@@ -11,11 +11,11 @@ const ReviewList = () => {
     (async () => {
       try {
         const token = await getAccessTokenSilently({
-          audience: 'http://localhost:5000/',
+          audience: process.env.REACT_APP_AUDIENCE,
           scope: 'view:unpublished_list',
         });
 
-        const response = await fetch('http://localhost:5000/unpublished', {
+        const response = await fetch(process.env.REACT_APP_API_URL + '/unpublished', {
           headers: {
             Authorization: `Bearer ${token}`,
           },

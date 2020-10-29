@@ -4,17 +4,17 @@ import { Redirect } from 'react-router-dom';
 import Card from 'react-bootstrap/Card';
 
 const Users = () => {
-  const { getAccessTokenSilently, user } = useAuth0();
+  const { getAccessTokenSilently } = useAuth0();
   const [ users, setUsers ] = useState();
   const [ authError, setAuthError] = useState();
   useEffect(() => {
     (async () => {
       try {
         const token = await getAccessTokenSilently({
-          audience: 'http://localhost:5000/',
+          audience: process.env.REACT_APP_AUDIENCE,
           scope: 'list:users',
         });
-        const response = await fetch('http://localhost:5000/admin/users', {
+        const response = await fetch(process.env.REACT_APP_API_URL + '/admin/users', {
           headers: {
             Authorization: `Bearer ${token}`,
           },

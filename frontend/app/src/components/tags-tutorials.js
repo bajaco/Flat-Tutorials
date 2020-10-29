@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom';
-import { useAuth0 } from '@auth0/auth0-react';
 import Badge from 'react-bootstrap/Badge';
 
 
@@ -12,7 +11,7 @@ const TagsTutorials = () =>{
     (async () => {
       try {
         
-        const response = await fetch('http://localhost:5000/published/tags/' + tagname);
+        const response = await fetch(process.env.REACT_APP_API_URL + '/published/tags/' + tagname);
         setTutorials(await response.json());
       } catch(e) {
         console.error(e);
@@ -62,4 +61,4 @@ const TagsTutorials = () =>{
     );
   }
 }
-export default TagsTutorials
+export default TagsTutorials;

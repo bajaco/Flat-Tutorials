@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useAuth0 } from '@auth0/auth0-react';
 import { Redirect } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
@@ -17,10 +17,10 @@ const Create = () => {
       (async () => {
         try {
           const token = await getAccessTokenSilently({
-            audience: 'http://localhost:5000/',
+            audience: process.env.REACT_APP_AUDIENCE,
             scope: 'submit:tutorial',
           });
-          const response = await fetch('http://localhost:5000/submit', {
+          const response = await fetch(`${process.env.REACT_APP_API_URL}/submit`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

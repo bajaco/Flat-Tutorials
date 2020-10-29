@@ -12,11 +12,11 @@ const Navigation = () => {
   if (!user) {
     return (<PublicMenu />);
   } else {
-    if (user['http://localhost:3000/roles'].includes('administrator')) {
+    if (user[process.env.REACT_APP_ROLES_URL].includes('administrator')) {
       return (<AdminMenu />);
-    } else if (user['http://localhost:3000/roles'].includes('moderator')) {
+    } else if (user[process.env.REACT_APP_ROLES_URL].includes('moderator')) {
       return (<ModMenu />);
-    } else if (user['http://localhost:3000/roles'].includes('registered_user')) {
+    } else if (user[process.env.REACT_APP_ROLES_URL].includes('registered_user')) {
       return (<RegisteredMenu />);
     }
   }

@@ -20,10 +20,10 @@ const ReviewTutorial = () => {
     (async () => {
       try {
         const token = await getAccessTokenSilently({
-          audience: 'http://localhost:5000/',
+          audience: process.env.REACT_APP_AUDIENCE,
           scope: 'view:unpublished',
         });
-        const response = await fetch('http://localhost:5000/unpublished/' + tutorialid, {
+        const response = await fetch(process.env.REACT_APP_API_URL + '/unpublished/' + tutorialid, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -33,7 +33,7 @@ const ReviewTutorial = () => {
         console.error(e);
       }
     })();
-  }, [getAccessTokenSilently]);
+  }, [getAccessTokenSilently, tutorialid]);
 
   const approve = (event) => {
     event.preventDefault();
@@ -43,10 +43,10 @@ const ReviewTutorial = () => {
       (async () => {
         try {
           const token = await getAccessTokenSilently({
-            audience: 'http://localhost:5000/',
+            audience: process.env.REACT_APP_AUDIENCE,
             scope: 'submit:tutorial',
           });
-          const response = await fetch('http://localhost:5000/publish/' + tutorialid, {
+          const response = await fetch(process.env.REACT_APP_API_URL + '/publish/' + tutorialid, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -69,10 +69,10 @@ const ReviewTutorial = () => {
       (async () => {
         try {
           const token = await getAccessTokenSilently({
-            audience: 'http://localhost:5000/',
+            audience: process.env.REACT_APP_AUDIENCE,
             scope: 'submit:tutorial',
           });
-          const response = await fetch('http://localhost:5000/deny/' + tutorialid, {
+          const response = await fetch(process.env.REACT_APP_API_URL + '/deny/' + tutorialid, {
             method: 'PATCH',
             headers: {
               'Content-Type': 'application/json',

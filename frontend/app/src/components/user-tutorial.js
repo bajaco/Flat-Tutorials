@@ -24,11 +24,11 @@ const UserTutorial = () => {
     (async () => {
       try {
         const token = await getAccessTokenSilently({
-          audience: 'http://localhost:5000/',
+          audience: process.env.REACT_APP_AUDIENCE,
           scope: 'submit:tutorial',
         });
 
-        const response = await fetch('http://localhost:5000/submitted/' + tutorialid, {
+        const response = await fetch(process.env.REACT_APP_API_URL + '/submitted/' + tutorialid, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -43,7 +43,7 @@ const UserTutorial = () => {
         console.error(e);
       }
     })();
-  }, [getAccessTokenSilently]);
+  }, [getAccessTokenSilently, tutorialid]);
   
 
   const submit = (event) => {
@@ -54,10 +54,10 @@ const UserTutorial = () => {
         (async () => {
           try {
             const token = await getAccessTokenSilently({
-              audience: 'http://localhost:5000/',
+              audience: process.env.REACT_APP_AUDIENCE,
               scope: 'edit:tutorial',
             });
-            const response = await fetch('http://localhost:5000/edit/' + tutorialid, {
+            const response = await fetch(process.env.REACT_APP_API_URL + '/edit/' + tutorialid, {
               method: 'PATCH',
               headers: {
                 'Content-Type': 'application/json',
@@ -76,10 +76,6 @@ const UserTutorial = () => {
         })();
       }
     }
-  }
-  
-  const tagstring = () => {
-    return tags.split(', ');
   }
 
   if (apiResponse) {
