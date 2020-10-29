@@ -19,7 +19,7 @@ const Navigation = () => {
     } else if (user[process.env.REACT_APP_ROLES_URL].includes('registered_user')) {
       return (<RegisteredMenu />);
     } else {
-      return (<Redirect to='/'>);
+      return (<Redirect to='/' />);
     }
   }
 }
