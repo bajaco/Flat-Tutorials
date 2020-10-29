@@ -28,8 +28,7 @@ class App extends Component {
           audience={process.env.REACT_APP_AUDIENCE}
           scope={process.env.REACT_APP_SCOPE}
         >
-          <Container>
-            <h1>{process.env.REACT_APP_DOMAIN}</h1>
+          <Container> 
             <link
               rel="stylesheet"
               href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
