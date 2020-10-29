@@ -1,6 +1,6 @@
-## Flat Tutorials - IN PROGRESS
+# Flat Tutorials
 
-This is my capstone project for the Udacity Full-Stack Developer Nano-Degree. It is currently in progress and I'm making updates every day. You can see my initial project outline in SPECIFICATION.md
+[Flat Tutorials is now live!](https://flat-tutorials.herokuapp.com)
 
 ### About
 

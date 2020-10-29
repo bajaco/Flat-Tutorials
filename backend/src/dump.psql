@@ -1,0 +1,436 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 12.4
+-- Dumped by pg_dump version 12.4
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: alembic_version; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.alembic_version (
+    version_num character varying(32) NOT NULL
+);
+
+
+ALTER TABLE public.alembic_version OWNER TO postgres;
+
+--
+-- Name: published_tutorials; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.published_tutorials (
+    id integer NOT NULL,
+    author_id integer,
+    title character varying NOT NULL,
+    text character varying NOT NULL
+);
+
+
+ALTER TABLE public.published_tutorials OWNER TO postgres;
+
+--
+-- Name: published_tutorials_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.published_tutorials_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.published_tutorials_id_seq OWNER TO postgres;
+
+--
+-- Name: published_tutorials_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.published_tutorials_id_seq OWNED BY public.published_tutorials.id;
+
+
+--
+-- Name: published_tutorials_tags; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.published_tutorials_tags (
+    left_id integer,
+    right_id integer
+);
+
+
+ALTER TABLE public.published_tutorials_tags OWNER TO postgres;
+
+--
+-- Name: tags; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tags (
+    id integer NOT NULL,
+    name character varying(50)
+);
+
+
+ALTER TABLE public.tags OWNER TO postgres;
+
+--
+-- Name: tags_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.tags_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.tags_id_seq OWNER TO postgres;
+
+--
+-- Name: tags_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.tags_id_seq OWNED BY public.tags.id;
+
+
+--
+-- Name: unpublished_tutorials; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.unpublished_tutorials (
+    id integer NOT NULL,
+    author_id integer,
+    under_review boolean NOT NULL,
+    published boolean NOT NULL,
+    title character varying(100) NOT NULL,
+    text character varying NOT NULL,
+    reviewer_notes character varying(100)
+);
+
+
+ALTER TABLE public.unpublished_tutorials OWNER TO postgres;
+
+--
+-- Name: unpublished_tutorials_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.unpublished_tutorials_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.unpublished_tutorials_id_seq OWNER TO postgres;
+
+--
+-- Name: unpublished_tutorials_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.unpublished_tutorials_id_seq OWNED BY public.unpublished_tutorials.id;
+
+
+--
+-- Name: unpublished_tutorials_tags; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.unpublished_tutorials_tags (
+    left_id integer,
+    right_id integer
+);
+
+
+ALTER TABLE public.unpublished_tutorials_tags OWNER TO postgres;
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.users (
+    id integer NOT NULL,
+    auth0_id character varying(600) NOT NULL,
+    username character varying(20) NOT NULL,
+    email character varying(40)
+);
+
+
+ALTER TABLE public.users OWNER TO postgres;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.users_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.users_id_seq OWNER TO postgres;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
+
+
+--
+-- Name: published_tutorials id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.published_tutorials ALTER COLUMN id SET DEFAULT nextval('public.published_tutorials_id_seq'::regclass);
+
+
+--
+-- Name: tags id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tags ALTER COLUMN id SET DEFAULT nextval('public.tags_id_seq'::regclass);
+
+
+--
+-- Name: unpublished_tutorials id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.unpublished_tutorials ALTER COLUMN id SET DEFAULT nextval('public.unpublished_tutorials_id_seq'::regclass);
+
+
+--
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
+
+--
+-- Data for Name: alembic_version; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.alembic_version (version_num) FROM stdin;
+8e007772be48
+\.
+
+
+--
+-- Data for Name: published_tutorials; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.published_tutorials (id, author_id, title, text) FROM stdin;
+\.
+
+
+--
+-- Data for Name: published_tutorials_tags; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.published_tutorials_tags (left_id, right_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: tags; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.tags (id, name) FROM stdin;
+1	sd fsd
+2	fsdf sdf
+3	First
+4	One
+5	Best
+6	fgdsfg dsf
+\.
+
+
+--
+-- Data for Name: unpublished_tutorials; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.unpublished_tutorials (id, author_id, under_review, published, title, text, reviewer_notes) FROM stdin;
+1	1	t	f	sdf sdf	fsd fsdf sd	\N
+2	1	t	f	s dfsd fsd	sdf sdd	\N
+3	4	t	f	My first tutorial	This is my first. :)\n\n# MY FIRST	\N
+4	5	t	f	dfgsdf gsdf gsd	 gsdfgsdfgsdfg	\N
+\.
+
+
+--
+-- Data for Name: unpublished_tutorials_tags; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.unpublished_tutorials_tags (left_id, right_id) FROM stdin;
+1	1
+2	2
+3	3
+3	4
+3	5
+4	6
+\.
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.users (id, auth0_id, username, email) FROM stdin;
+1	auth0|5f86579833e659006e522db2	admin#1	admin@agyx.org
+2	auth0|5f9aff2e262b5a006e80b72e	new#2	new@agyx.org
+3	auth0|5f9b01946a5a4d00757ac74d	new4#3	new4@agyx.org
+4	auth0|5f9b025d6b14350077f20128	new#4	new@agyx.org
+5	auth0|5f9b0312262b5a006e80bc73	new2#5	new2@agyx.org
+\.
+
+
+--
+-- Name: published_tutorials_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.published_tutorials_id_seq', 1, false);
+
+
+--
+-- Name: tags_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.tags_id_seq', 6, true);
+
+
+--
+-- Name: unpublished_tutorials_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.unpublished_tutorials_id_seq', 4, true);
+
+
+--
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.users_id_seq', 5, true);
+
+
+--
+-- Name: alembic_version alembic_version_pkc; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.alembic_version
+    ADD CONSTRAINT alembic_version_pkc PRIMARY KEY (version_num);
+
+
+--
+-- Name: published_tutorials published_tutorials_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.published_tutorials
+    ADD CONSTRAINT published_tutorials_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: tags tags_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tags
+    ADD CONSTRAINT tags_name_key UNIQUE (name);
+
+
+--
+-- Name: tags tags_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tags
+    ADD CONSTRAINT tags_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: unpublished_tutorials unpublished_tutorials_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.unpublished_tutorials
+    ADD CONSTRAINT unpublished_tutorials_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: published_tutorials published_tutorials_author_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.published_tutorials
+    ADD CONSTRAINT published_tutorials_author_id_fkey FOREIGN KEY (author_id) REFERENCES public.users(id);
+
+
+--
+-- Name: published_tutorials_tags published_tutorials_tags_left_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.published_tutorials_tags
+    ADD CONSTRAINT published_tutorials_tags_left_id_fkey FOREIGN KEY (left_id) REFERENCES public.published_tutorials(id);
+
+
+--
+-- Name: published_tutorials_tags published_tutorials_tags_right_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.published_tutorials_tags
+    ADD CONSTRAINT published_tutorials_tags_right_id_fkey FOREIGN KEY (right_id) REFERENCES public.tags(id);
+
+
+--
+-- Name: unpublished_tutorials unpublished_tutorials_author_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.unpublished_tutorials
+    ADD CONSTRAINT unpublished_tutorials_author_id_fkey FOREIGN KEY (author_id) REFERENCES public.users(id);
+
+
+--
+-- Name: unpublished_tutorials_tags unpublished_tutorials_tags_left_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.unpublished_tutorials_tags
+    ADD CONSTRAINT unpublished_tutorials_tags_left_id_fkey FOREIGN KEY (left_id) REFERENCES public.unpublished_tutorials(id);
+
+
+--
+-- Name: unpublished_tutorials_tags unpublished_tutorials_tags_right_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.unpublished_tutorials_tags
+    ADD CONSTRAINT unpublished_tutorials_tags_right_id_fkey FOREIGN KEY (right_id) REFERENCES public.tags(id);
+
+
+--
+-- PostgreSQL database dump complete
+--
+

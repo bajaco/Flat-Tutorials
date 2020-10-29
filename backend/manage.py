@@ -6,7 +6,7 @@ from src import db
 
 load_dotenv('.flaskenv')
 app = create_app()
-migrate = Migrate(app,db)
+migrate = Migrate(app, db)
 manager = Manager(app)
 
 manager.add_command('db', MigrateCommand)

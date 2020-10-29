@@ -1,22 +1,22 @@
 from . import db
 
-# Helper functions
 
+# Helper functions
 def dictit(obj, *args):
     new_dict = {}
     for arg in args:
         result = getattr(obj, arg)
-        if isinstance(result,list):
+        if isinstance(result, list):
             result = [str(i) for i in result]
-        elif isinstance(result,int):
+        elif isinstance(result, int):
             result = result
         else:
             result = str(result)
 
         new_dict[arg] = result
-        
+
     return new_dict
-    
+
 
 # User class with linking id to auth0id
 class User(db.Model):
@@ -25,11 +25,13 @@ class User(db.Model):
     auth0_id = db.Column(db.String(600), nullable=False)
     username = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(40))
-    
-    unpublished = db.relationship('Unpublished_Tutorial',
+
+    unpublished = db.relationship(
+            'Unpublished_Tutorial',
             backref='author',
             lazy=True)
-    published = db.relationship('Published_Tutorial',
+    published = db.relationship(
+            'Published_Tutorial',
             backref='author',
             lazy=True)
 
@@ -48,21 +50,31 @@ class User(db.Model):
         db.session.commit()
 
     def description(self):
-        description = dictit(self,'id', 'auth0_id','username','email')
+        description = dictit(self, 'id', 'auth0_id', 'username', 'email')
         description['published'] = len(self.published)
         return description
 
+
 # Association table between unpublished tutorials and tags
-unpublished_tutorial_tag = db.Table('unpublished_tutorials_tags', db.Model.metadata,
-        db.Column('left_id', db.Integer, db.ForeignKey('unpublished_tutorials.id')),
+unpublished_tutorial_tag = db.Table(
+        'unpublished_tutorials_tags',
+        db.Model.metadata,
+        db.Column('left_id', db.Integer,
+                  db.ForeignKey('unpublished_tutorials.id')),
         db.Column('right_id', db.Integer, db.ForeignKey('tags.id'))
         )
 
 # Association table between published tutorials and tags
-published_tutorial_tag = db.Table('published_tutorials_tags', db.Model.metadata,
-        db.Column('left_id', db.Integer, db.ForeignKey('published_tutorials.id')),
-        db.Column('right_id', db.Integer, db.ForeignKey('tags.id'))
-        )
+published_tutorial_tag = db.Table(
+        'published_tutorials_tags',
+        db.Model.metadata,
+        db.Column('left_id',
+                  db.Integer,
+                  db.ForeignKey('published_tutorials.id')),
+        db.Column('right_id',
+                  db.Integer,
+                  db.ForeignKey('tags.id')))
+
 
 # Unpublished tutorials, separately implemented from published
 # tutorials so changes can be acccepted before publishing without
@@ -77,28 +89,29 @@ class Unpublished_Tutorial(db.Model):
     text = db.Column(db.String(), nullable=False)
     reviewer_notes = db.Column(db.String(100))
     tags = db.relationship('Tag',
-        secondary=unpublished_tutorial_tag,
-        back_populates='unpublished_tutorials')
-    
+                           secondary=unpublished_tutorial_tag,
+                           back_populates='unpublished_tutorials')
+
     def insert(self):
         db.session.add(self)
         db.session.commit()
 
     def update(self):
         db.session.commit()
- 
+
     def delete(self):
         db.session.delete(self)
-        db.session.commit()   
+        db.session.commit()
 
     def short(self):
-        return dictit(self,'id','author_id','author','title','tags', 
-                'under_review', 'published')
-       
+        return dictit(self, 'id', 'author_id', 'author', 'title', 'tags',
+                      'under_review', 'published')
+
     def long(self):
-        return dictit(self,'id','author_id', 'author','title','tags',
-                'text', 'under_review', 'reviewer_notes', 'published')
-     
+        return dictit(self, 'id', 'author_id', 'author', 'title', 'tags',
+                      'text', 'under_review', 'reviewer_notes', 'published')
+
+
 # Published tutorials
 class Published_Tutorial(db.Model):
     __tablename__ = 'published_tutorials'
@@ -107,8 +120,8 @@ class Published_Tutorial(db.Model):
     title = db.Column(db.String(), nullable=False)
     text = db.Column(db.String(), nullable=False)
     tags = db.relationship('Tag',
-        secondary=published_tutorial_tag,
-        back_populates='published_tutorials')
+                           secondary=published_tutorial_tag,
+                           back_populates='published_tutorials')
 
     def insert(self):
         db.session.add(self)
@@ -120,12 +133,14 @@ class Published_Tutorial(db.Model):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
-    
+
     def short(self):
-        return dictit(self,'id','author_id','author','title','tags')
-       
+        return dictit(self, 'id', 'author_id', 'author', 'title', 'tags')
+
     def long(self):
-        return dictit(self,'id','author_id','author','title','tags','text')
+        return dictit(self, 'id', 'author_id',
+                      'author', 'title', 'tags', 'text')
+
 
 # Tags to be applied to tutorials when submitted
 class Tag(db.Model):
@@ -136,7 +151,7 @@ class Tag(db.Model):
         'Unpublished_Tutorial',
         secondary=unpublished_tutorial_tag,
         back_populates='tags')
-    
+
     published_tutorials = db.relationship(
         'Published_Tutorial',
         secondary=published_tutorial_tag,
@@ -151,6 +166,3 @@ class Tag(db.Model):
 
     def update(self):
         db.session.commit()
-
-
-
