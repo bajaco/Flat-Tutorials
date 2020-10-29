@@ -72,6 +72,7 @@ class Unpublished_Tutorial(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     under_review = db.Column(db.Boolean, nullable=False)
+    published = db.Column(db.Boolean, nullable=False)
     title = db.Column(db.String(100), nullable=False)
     text = db.Column(db.String(), nullable=False)
     reviewer_notes = db.Column(db.String(100))
@@ -91,10 +92,12 @@ class Unpublished_Tutorial(db.Model):
         db.session.commit()   
 
     def short(self):
-        return dictit(self,'id','author_id','author','title','tags')
+        return dictit(self,'id','author_id','author','title','tags', 
+                'under_review', 'published')
        
     def long(self):
-        return dictit(self,'id','author_id', 'author','title','tags','text')
+        return dictit(self,'id','author_id', 'author','title','tags',
+                'text', 'under_review', 'reviewer_notes', 'published')
      
 # Published tutorials
 class Published_Tutorial(db.Model):

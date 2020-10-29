@@ -6,6 +6,8 @@ import Users from './components/users.js';
 import TutorialsList from './components/tutorials-list.js';
 import PublicTutorial from './components/public-tutorial.js';
 import TagsTutorials from './components/tags-tutorials.js';
+import UserList from './components/user-list.js';
+import UserTutorial from './components/user-tutorial.js';
 import Create from './components/create.js';
 import ReviewList from './components/review-list.js';
 import ReviewTutorial from './components/review-tutorial.js';
@@ -25,7 +27,7 @@ class App extends Component {
           responseType='token id_token'
           redirectUri={window.location.origin}
           audience='http://localhost:5000/'
-          scope='openid email profile list:users submit:tutorial view:unpublished_list view:unpublished'
+          scope='openid email profile list:users submit:tutorial view:unpublished_list view:unpublished edit:tutorial'
         >
           <Container>
             <link
@@ -39,6 +41,10 @@ class App extends Component {
               <Route path="/tags/:tagname" children={<TagsTutorials />} />
               <Route path='/tutorials/:tutorialid' children={<PublicTutorial />} />
               <Route path='/review/:tutorialid' children={<ReviewTutorial />} />
+              <Route path='/my-tutorials/:tutorialid' children={<UserTutorial />} />
+              <Route path='/my-tutorials'>
+                <UserList />
+              </Route>
               <Route path='/users'>
                 <Users />
               </Route>

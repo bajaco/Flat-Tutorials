@@ -37,8 +37,7 @@ const Create = () => {
           console.log(e);
         }
       })();
-    }
-    return (<Redirect to='/' />);
+    } 
   }
   
   if (apiResponse) {

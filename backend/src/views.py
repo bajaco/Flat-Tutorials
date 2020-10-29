@@ -130,7 +130,8 @@ def submit(payload):
                 author_id=context['id'],
                 title=data.get('title'),
                 text=data.get('text'),
-                under_review=True
+                under_review=True,
+                published=False
                 )
         if data.get('tags'):
             for tag_name in data.get('tags').split(', '):
@@ -162,10 +163,9 @@ def edit(payload, tutorial_id):
         tutorial.title = data.get('title')
         tutorial.text = data.get('text')
         tutorial.under_review=True
-        for tag in tutorial.tags:
-            tutorial.tags.remove(tag)
+        tutorial.tags.clear()
         if data.get('tags'):
-            for tag_name in data.get('tags'):
+            for tag_name in data.get('tags').split(', '):
                 tag = Tag.query.filter_by(name=tag_name).one_or_none()
                 if not tag:
                     tag = Tag(name=tag_name)
@@ -186,8 +186,7 @@ def edit(payload, tutorial_id):
 @requires_auth('submit:tutorial')
 def get_submitted_list(payload):
     context = user_context(payload)
-    tutorials = Unpublished_Tutorial.query.filter_by(author_id=context['id'])
-    tutorials = tutorials.filter_by(under_review=True).all()
+    tutorials = Unpublished_Tutorial.query.filter_by(author_id=context['id']).all()
     result = [tutorial.short() for tutorial in tutorials]
     return jsonify({
         'success': True,
@@ -268,6 +267,7 @@ def publish(payload, tutorial_id):
         published.text = unpublished.text
         published.tags = unpublished.tags
         unpublished.under_review = False
+        unpublished.published = True
         unpublished.update()
         
         #update or insert depending on whether it exists
@@ -296,6 +296,7 @@ def deny(payload, tutorial_id):
     tutorial = Unpublished_Tutorial.query.get_or_404(tutorial_id)
     try:
         tutorial.reviewer_notes = data.get('reviewer_notes')
+        tutorial.under_review = False
         tutorial.update()
     except:
         abort(500)

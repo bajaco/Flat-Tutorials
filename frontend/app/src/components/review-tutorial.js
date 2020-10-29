@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, Redirect } from 'react-router-dom';
 import Badge from 'react-bootstrap/Badge';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
@@ -12,6 +12,8 @@ const ReviewTutorial = () => {
   const { getAccessTokenSilently } = useAuth0();
   const [ tutorial, setTutorial ] = useState();
   const [ notes, setNotes ] = useState();
+  const [ apiResponse, setApiResponse ] = useState();
+  const [ submitted, setSubmitted ] = useState(false);
   const { tutorialid } = useParams();
   
   useEffect(() => {
@@ -33,8 +35,65 @@ const ReviewTutorial = () => {
     })();
   }, [getAccessTokenSilently]);
 
-  const submit = (event) => {
-    console.log('ok...');
+  const approve = (event) => {
+    event.preventDefault();
+    if (!submitted) { 
+      console.log('approve');
+      setSubmitted(true);
+      (async () => {
+        try {
+          const token = await getAccessTokenSilently({
+            audience: 'http://localhost:5000/',
+            scope: 'submit:tutorial',
+          });
+          const response = await fetch('http://localhost:5000/publish/' + tutorialid, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setApiResponse(await response.json());
+        } catch (e) {
+          console.log(e);
+        }
+      })();
+    } 
+  }
+  
+  const deny = (event) => {
+    event.preventDefault();
+    if (!submitted) {
+      console.log('deny');
+      setSubmitted(true);
+      (async () => {
+        try {
+          const token = await getAccessTokenSilently({
+            audience: 'http://localhost:5000/',
+            scope: 'submit:tutorial',
+          });
+          const response = await fetch('http://localhost:5000/deny/' + tutorialid, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              reviewer_notes: notes,
+            }),
+          });
+          setApiResponse(await response.json());
+        } catch (e) {
+          console.log(e);
+        }
+      })();
+    }
+  }
+  
+  if (apiResponse) {
+    return (
+      <Redirect to='/review' />
+    );
   }
 
   if (!tutorial) {
@@ -75,15 +134,15 @@ const ReviewTutorial = () => {
           ))}
         </Card.Footer>
       </Card>
-      <Form onSubmit={submit}>
+      <Form>
         <Form.Group controlId="formNotes">
           <Form.Label>Enter notes if rejecting tutorial.</Form.Label>
           <Form.Control as="textarea" value={notes} onChange={(e => setNotes(e.target.value))} rows={5} placeholder="Enter rejection notes" />
         </Form.Group>
-        <Button variant="outline-dark" type="submit" value="approve">
+        <Button variant="outline-dark" type="submit" onClick={approve}>
           Approve
         </Button>
-        <Button variant="outline-dark" type="submit" value="reject">
+        <Button variant="outline-dark" type="submit" onClick={deny}>
           Reject
         </Button>
       </Form>
