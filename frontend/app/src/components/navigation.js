@@ -8,10 +8,9 @@ import { useAuth0 } from '@auth0/auth0-react';
 
 const Navigation = () => {
   const { user } = useAuth0();
-  
-  if (!user) {
-    return (<PublicMenu />);
-  } else {
+  const { isAuthenticated } = useAuth0();
+  const { loginWithRedirect } = useAuth0();
+  if (isAuthenticated) {
     if (user[process.env.REACT_APP_ROLES_URL].includes('administrator')) {
       return (<AdminMenu />);
     } else if (user[process.env.REACT_APP_ROLES_URL].includes('moderator')) {
@@ -19,8 +18,10 @@ const Navigation = () => {
     } else if (user[process.env.REACT_APP_ROLES_URL].includes('registered_user')) {
       return (<RegisteredMenu />);
     } else {
-      return (<Redirect to='/' />);
+      loginWithRedirect();
     }
+  } else {
+    return(<PublicMenu />);
   }
 }
-export default Navigation
+export default Navigation;
