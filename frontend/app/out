@@ -1,0 +1,639 @@
+commit d90b7300f599284591c81f15473ef4be17cccc9e
+Author: bajaco <admin@agyx.org>
+Date:   Fri Oct 30 03:20:47 2020 +0000
+
+    Fix: Testing overhaul
+    
+    Tests were failing due to disagreement as to
+    who splits strings among the clients and
+    server. Also moved stuff around to make the
+    tests easier to execute.
+
+commit a5e264cd4bff92edfac7e1b28a0c0cbfcd1ec408
+Author: bajaco <admin@agyx.org>
+Date:   Thu Oct 29 20:13:15 2020 +0000
+
+    Fix: Readme formatting.
+
+commit c6701aa639ac2f4a342ed4b5829a2ccd37c1961f
+Author: bajaco <admin@agyx.org>
+Date:   Thu Oct 29 20:12:14 2020 +0000
+
+    Fix: Readme formatting.
+
+commit de2fb4715b4c8d6d9ee157dda7066c5029380be8
+Author: bajaco <admin@agyx.org>
+Date:   Thu Oct 29 20:03:20 2020 +0000
+
+    Fix: Readmes
+    
+    Updated readmes and pep8 styling fixes
+
+commit 9324cbc6429af5306c8229e7dc323282a9c73a89
+Author: bajaco <admin@agyx.org>
+Date:   Thu Oct 29 18:03:19 2020 +0000
+
+    Fix: Authentication
+    
+    Fixed glitch with the menu and automatically reauthenticate
+    new user sign-up to display properly
+
+commit 208f4aa2dc68a8481012ed9056e25f9fd91a3303
+Author: bajaco <admin@agyx.org>
+Date:   Thu Oct 29 17:30:43 2020 +0000
+
+    fix: typo
+
+commit 2d4f35f29418ef997b7cbff28c69048d67354ac1
+Author: bajaco <admin@agyx.org>
+Date:   Thu Oct 29 17:27:44 2020 +0000
+
+    Fix: Redirect if no role
+    
+    Trying a redirect if user does no have a default
+    role, in order to refresh and apply the rule
+
+commit df53a985bac74b0a853f71ef374806894e23185a
+Author: bajaco <admin@agyx.org>
+Date:   Thu Oct 29 16:36:54 2020 +0000
+
+     testing
+
+commit 2294c2fd5e117b3cc6ed89f8c278e7b62a02835e
+Author: bajaco <admin@agyx.org>
+Date:   Thu Oct 29 15:33:26 2020 +0000
+
+    migrations test
+
+commit b6dacc3db72dd30e701f2de5100025ac5fcff451
+Author: bajaco <admin@agyx.org>
+Date:   Thu Oct 29 15:04:09 2020 +0000
+
+    Fix: Incorrect API URL
+
+commit 02336662b0670e1dc3ba8fd55446f9b7b868ee07
+Author: bajaco <admin@agyx.org>
+Date:   Thu Oct 29 14:58:43 2020 +0000
+
+    Fix: Build update
+
+commit 997a2b9742d4663734c36c877dc301dc19efdb7f
+Author: bajaco <admin@agyx.org>
+Date:   Thu Oct 29 14:53:00 2020 +0000
+
+    Fix: Environment Variables
+    Environment variables switched to auth.py
+
+commit 389758142876f995d4a00b70584e8e3ca9a3de4b
+Author: bajaco <admin@agyx.org>
+Date:   Thu Oct 29 14:32:53 2020 +0000
+
+    fix: migrations test
+
+commit 84405e528bc39e70840106e16b719bac36330ac9
+Author: bajaco <admin@agyx.org>
+Date:   Thu Oct 29 14:11:06 2020 +0000
+
+    Fix: api url
+
+commit cdef4e85b97e05dde51da349a436ea8e6b11faec
+Author: bajaco <admin@agyx.org>
+Date:   Thu Oct 29 14:07:12 2020 +0000
+
+    Fix: Dependency
+
+commit 168cf467c6cdb4c8c0672ec0224439df6d147e76
+Author: bajaco <admin@agyx.org>
+Date:   Thu Oct 29 13:51:03 2020 +0000
+
+    Initialize react app for heroku
+
+commit c23f9ae1a2d34322d62d78a0d1c1d91dfd92d6a1
+Author: bajaco <admin@agyx.org>
+Date:   Thu Oct 29 13:42:53 2020 +0000
+
+    Fix: environment variables
+    
+    Set up environment variables for react to make
+    deployment changes easier.
+
+commit fe4897098209c705b9d5542793b166a8435a663c
+Author: bajaco <admin@agyx.org>
+Date:   Thu Oct 29 12:34:12 2020 +0000
+
+    Fix: Procfile
+
+commit cc66dfdb286171c386171b292cd315117b10eae4
+Author: bajaco <admin@agyx.org>
+Date:   Thu Oct 29 12:11:55 2020 +0000
+
+    fix heroku
+
+commit 63808c2b9d792ee76374177fee6dc8a9739589ee
+Author: bajaco <admin@agyx.org>
+Date:   Thu Oct 29 12:01:58 2020 +0000
+
+    fix: migrations error
+
+commit 8f730f1b4a545ac5e0db6d0255091cbb806adde2
+Author: bajaco <admin@agyx.org>
+Date:   Thu Oct 29 11:58:37 2020 +0000
+
+    fix: deployment issues
+
+commit 489809d3d9a2e179746a1351e36eb723e656063d
+Author: bajaco <admin@agyx.org>
+Date:   Thu Oct 29 11:32:06 2020 +0000
+
+    fix: requirements
+
+commit 5ee01cc372f97c5dd92a0a109c1ac6727e647d38
+Author: bajaco <admin@agyx.org>
+Date:   Thu Oct 29 11:29:07 2020 +0000
+
+    Fix: deployment tuning
+
+commit 0c98e06c9994a27898101b34f69a615f93771356
+Author: bajaco <admin@agyx.org>
+Date:   Thu Oct 29 11:05:30 2020 +0000
+
+    Fix: Procfile and run.py
+    
+    Fixed details to ensure smooth deployment on heroku
+
+commit 4832699d8c50edda23b611046e1d64b20a02d840
+Author: bajaco <admin@agyx.org>
+Date:   Thu Oct 29 09:07:43 2020 +0000
+
+    Fix: deployment adjustments
+    
+    Preparing for heroku deployment
+
+commit e4ab7561fbfa27b6ed1adf2d0f27c6b46c111c67
+Author: bajaco <admin@agyx.org>
+Date:   Thu Oct 29 08:30:08 2020 +0000
+
+    Fix: Environment Variables
+    
+    Separated out environment variables so I can
+    start testing deployment.
+
+commit 4c0026a31925138d174f8f243c177eb6db6e5629
+Author: bajaco <admin@agyx.org>
+Date:   Thu Oct 29 06:53:43 2020 +0000
+
+    Feat: All basic views implemented.
+    
+    All basic views implemented, planning some
+    clean up on the front-end, but I do need
+    to submit my project soon so that may happen
+    after submission.
+
+commit 2beff61a1bfc02ee5eed29fb152a80b01f7f88a7
+Author: bajaco <admin@agyx.org>
+Date:   Wed Oct 28 22:54:48 2020 +0000
+
+    Feat: review view connected.
+
+commit 54baa49ec0eba1b84cb42eebeb6a68274aefe754
+Author: bajaco <admin@agyx.org>
+Date:   Wed Oct 28 22:53:30 2020 +0000
+
+    Feat: review view connected.
+
+commit 64ceb0c28387e79856eaa68f62289db84218f1c7
+Author: bajaco <admin@agyx.org>
+Date:   Tue Oct 27 11:34:54 2020 +0000
+
+    Feat: Submission
+    
+    Users can now submit tutorials, and users
+    privileged moderator or above can view
+    lists of submitted tutorials.
+
+commit aa8ee21755159f6291749b1ad679eed366b26f87
+Author: bajaco <admin@agyx.org>
+Date:   Tue Oct 27 06:49:10 2020 +0000
+
+    Feat: roles included in identity token
+    
+    Added support on auth0 to include roles in
+    identity token. I added conditional rendering
+    for the menu for all roles.
+
+commit 0865cbdc3c1114dde39ae30789d5e088ecaea2ad
+Author: bajaco <admin@agyx.org>
+Date:   Mon Oct 26 22:34:47 2020 +0000
+
+    Fix: tags
+    
+    Tags now re-render page when selecting different
+    tag on the tags page.
+
+commit d7f672cc36c0fab3cca0278c5522531784c0a57e
+Author: bajaco <admin@agyx.org>
+Date:   Mon Oct 26 13:01:35 2020 +0000
+
+    Feat: Routing and bootstrap
+    
+    Incorporated react-router and react-bootstrap
+    and more components. Tags are now working for
+    selecting tutorials, however do not update the
+    display when selecting from the tags path.
+
+commit 8776830807c002c6eb29fd4543bd1bc987bed3b7
+Author: bajaco <admin@agyx.org>
+Date:   Sun Oct 25 01:02:11 2020 +0000
+
+    Feat: added components.
+    
+    Added components test secured and public
+    API calls.
+
+commit f0d22beb57da025dc2aa0df2a09f971b6fa1f9b1
+Author: bajaco <admin@agyx.org>
+Date:   Sat Oct 24 08:57:08 2020 +0000
+
+    Fix: Permissions test
+    
+    Handled request failing for permissions test
+
+commit 64f64a31c2ce3c884d8d6a93c5cef3427bb8b7b0
+Author: bajaco <admin@agyx.org>
+Date:   Sat Oct 24 08:42:31 2020 +0000
+
+    Feat: Frontend calling secured endpoints.
+    
+    Made a test page to list users with the administrator account
+    to ensure that the frontend is requesting and passing JWTs to
+    the backend correctly.
+
+commit ed8b283e57255f216d0551c46dda13e600d121be
+Author: bajaco <admin@agyx.org>
+Date:   Sun Oct 18 23:21:11 2020 +0000
+
+    Feat: frontend boiler
+    
+    set up react and connected to api for a test
+
+commit bf36c40844dfc58e0aa84a9d35e5da64e2db803e
+Author: bajaco <admin@agyx.org>
+Date:   Sat Oct 17 18:24:42 2020 +0000
+
+    Fix: tag endpoints
+    
+    Fixed tag endpoints to require an exact match
+
+commit a767dccbfcea5c0905d786805ef00e5c8ba35997
+Author: bajaco <admin@agyx.org>
+Date:   Fri Oct 16 19:49:02 2020 +0000
+
+    fix: removed .psql
+    
+    removed .psql file that user is supposed to
+    generate and added it to .gitignore
+
+commit ec720c4434853cbce7f1798ae6d218a761643789
+Author: bajaco <admin@agyx.org>
+Date:   Fri Oct 16 19:44:11 2020 +0000
+
+    Feat: Implemented all tests
+    
+    Test suite now works. Objects for testing are
+    generated in the tests, which makes it slower
+    but means it works with empty tables.
+
+commit 4823221f79d2c9b3f62fb27b7857e5efe2ab2a6a
+Author: bajaco <admin@agyx.org>
+Date:   Fri Oct 16 16:24:25 2020 +0000
+
+    Fix: Implemented tests
+    
+    Finished implementing test for admin and moderator
+    
+    Had to implement errorhandler for the AuthErrors
+    generated in auth.py
+
+commit c5a53d785ece6b8bf08a8eb0c73e993ae729ff4f
+Author: bajaco <admin@agyx.org>
+Date:   Fri Oct 16 16:24:03 2020 +0000
+
+    Fix: Implemented tests
+    
+    Finished implementing test for admin and moderator
+    
+    Had to implement errorhandler for the AuthErrors
+    generated in auth.py
+
+commit dcbcf39ca498d8b711484410062db77fb0b9fe70
+Author: bajaco <admin@agyx.org>
+Date:   Fri Oct 16 02:48:56 2020 +0000
+
+    Fix: Test suite working
+    
+    Tests are operational, only one implemented so far.
+
+commit 40fac7f7de6bb2f45d116182a8a708ee1108ef13
+Author: bajaco <admin@agyx.org>
+Date:   Thu Oct 15 23:48:35 2020 +0000
+
+    Fix: Edited down tests.
+    
+    Removed tests that were excessively extraneous.
+
+commit 396ba01d791014d0fe8d0ba51acdd7c7bc5ccf37
+Author: bajaco <brett@agyx.org>
+Date:   Wed Oct 14 06:44:32 2020 +0000
+
+    Fix: Unused function
+    
+    Removed unneeded function and added additional commentation
+    to the test template generator.
+
+commit b6adbf791e07a117f5306b8c669009dbfc561ac1
+Author: bajaco <brett@agyx.org>
+Date:   Wed Oct 14 04:45:50 2020 +0000
+
+    Feat: Tests Generator
+    
+    Added a test_template_generator file that creates
+    a testing template, which was saved at test_app.py.
+    Most likely will not need to implement all, but nice
+    to have consistent FunctionDefs.
+
+commit 51709382ba7012393b3f1ca74274a1dafc8dbd4f
+Author: bajaco <brett@agyx.org>
+Date:   Wed Oct 14 01:34:46 2020 +0000
+
+    Fix: Added context to remaining auth functions.
+    
+    Made sure that the rest of the auth_required functions
+    also call the user_context() function to ensure that
+    profiles are generated.
+
+commit cccebe98e81bc780b296f0f038ddfd1c6330fab7
+Author: bajaco <brett@agyx.org>
+Date:   Wed Oct 14 01:28:07 2020 +0000
+
+    Fix: Endpoint organization
+    
+    Reorganized endpoints by roles and added a couple
+    of endpoints pertaining to viewing submitted
+    tutorials currently under review, for the regular
+    user
+
+commit 52166ecb402cac411d60c627f45f482919e6dd6d
+Author: bajaco <brett@agyx.org>
+Date:   Wed Oct 14 00:55:01 2020 +0000
+
+    Fix: Authorization
+    
+    Added authorization wrappers to endpoints, also
+    removed some endpoints that were extraneous as
+    users can be monitored in Auth0
+
+commit 4be7a200195ce75aaf4c57665358c4f45f8c8c29
+Author: bajaco <brett@agyx.org>
+Date:   Tue Oct 13 23:37:17 2020 +0000
+
+    Feat: Basic endpoints implemented
+    
+    The endpoints I currently (knowingly) need are
+    implemented. Next Step will be incorporating
+    authorization and user verification. More
+    endpoints will likely be added later when
+    they are needed.
+
+commit 63171aec94b372a6b3826dd4f22e284571e41992
+Author: bajaco <brett@agyx.org>
+Date:   Tue Oct 13 22:29:06 2020 +0000
+
+    Feat: Binding Auth0 to local accounts
+    
+    Implemented user context function that can be run in
+    authorized endpoints. This will determine if the logged
+    in auth0 user has a local account. If it does not it will
+    create a local account and generate a unique username.
+    The function then returns a dict containing user-info,
+    which can be used to validate certain requests.
+
+commit 60708efff95ebc58f46252b5c505ab69022dc26a
+Author: bajaco <brett@agyx.org>
+Date:   Tue Oct 13 02:25:20 2020 +0000
+
+    Feat: Authorization Code
+    
+    Added authorization code and functions for
+    auth0. Testing authorization worked, next I
+    will implement User profiles based on Auth0
+    profiles to generate required info automatically
+
+commit 963e0b9e3c24f2c8f58a850eb8c81fdb23dac4e4
+Author: bajaco <brett@agyx.org>
+Date:   Mon Oct 12 21:24:58 2020 +0000
+
+    Chore: update requirements
+    
+    Requirements updated to prepare for auth0
+
+commit 09300efef28d6f6e20e770cf9ec294baf2264812
+Author: bajaco <brett@agyx.org>
+Date:   Mon Oct 12 21:21:30 2020 +0000
+
+    Fix: cleanup
+
+commit 24ec3b673a4f339fba474a3228ffe0352c17a236
+Author: bajaco <brett@agyx.org>
+Date:   Mon Oct 12 20:39:55 2020 +0000
+
+    Fix: admin endpoints
+    
+    Cleanup and comments
+
+commit ede6715bf14ddc06c472df977ce946910f0e37a8
+Author: bajaco <brett@agyx.org>
+Date:   Mon Oct 12 20:35:08 2020 +0000
+
+    Feat: Administrative endpoints
+    
+    Added Admin endpoints for creating/deleting
+    users and articles. Some of these may be
+    removed later on depending on how I implement
+    Auth0 user registration.
+
+commit b14809e8da7216a88bde38034dcab4eea10449c9
+Author: bajaco <brett@agyx.org>
+Date:   Mon Oct 12 19:12:17 2020 +0000
+
+    Refactor:
+    
+    Major refactor to project structure to allow for
+    separate error handling and views
+
+commit 07445c7a76168852e991010b44324b4aa1987440
+Author: bajaco <brett@agyx.org>
+Date:   Mon Oct 12 15:49:56 2020 +0000
+
+    Fix: endpoint corrections
+    
+    Added 404 error handling for most endpoints, also implemented
+    under_review column for unpublished tutorials so the
+    moderator only sees tutorials ready to be reviewed.
+
+commit 0cfeca2f6123617354072a04de3d7d9f557daa72
+Author: bajaco <brett@agyx.org>
+Date:   Mon Oct 12 14:03:06 2020 +0000
+
+    Feat: submit endpoint
+    
+    Not yet tested, submit endpoint for user
+    to submit tutorial for review
+
+commit 7e718c2d80cbff7714f7c3a24b794f147429fb97
+Author: bajaco <brett@agyx.org>
+Date:   Mon Oct 12 13:43:02 2020 +0000
+
+    Feat: More endpoints
+    
+    Implemented tutorials by author and
+    tag-based searches. Not happy with
+    the multiple tag implementation yet
+
+commit 8bc91ebfe2b7e9b8e30e6f089b47187b0421ffa4
+Author: bajaco <brett@agyx.org>
+Date:   Mon Oct 12 11:55:42 2020 +0000
+
+    Fix: Readme
+    
+    Updated README.md to present a basic outline of the project
+    on the repo page.
+
+commit 74bbf0fecdb52fa60b7e70711667ee74cfdb55e4
+Author: bajaco <brett@agyx.org>
+Date:   Mon Oct 12 11:39:08 2020 +0000
+
+    Feat: Working endpoints
+    
+    Working endpoints for unpublished tutorial(s)
+    published tutorial(s)
+    publishing a tutorial
+
+commit 6259f60464021e4cfa2b5c6c08b9a259c0e32336
+Author: bajaco <brett@agyx.org>
+Date:   Mon Oct 12 08:37:51 2020 +0000
+
+    Feat: Basic Model implementation
+    
+    Implementation of four models with test in view
+    to verify working relationships
+
+commit 480041ffa2eaa2b956319be6be4ddae296b0327a
+Author: bajaco <brett@agyx.org>
+Date:   Mon Oct 12 06:37:25 2020 +0000
+
+    Refactor: clean up
+    
+    Cleaned up imports and project structure.
+
+commit 6fe00de2b433ebeac6174fe6874dec2a37381f38
+Author: bajaco <brett@agyx.org>
+Date:   Mon Oct 12 06:34:56 2020 +0000
+
+    Refactor: clean up
+    
+    Cleaned up imports and project structure.
+
+commit 2bcf065bf5e7507ca378d69cd56b3025077ff2fc
+Author: bajaco <brett@agyx.org>
+Date:   Sun Oct 11 07:42:34 2020 +0000
+
+    fix: error in views.py
+
+commit 71ab2910e6aa7462759bc9874b2fa12faf1fba64
+Author: bajaco <brett@agyx.org>
+Date:   Sun Oct 11 07:40:09 2020 +0000
+
+    Feat: working database
+    
+    Database and migration set up and working properly
+
+commit 8dbcac9816dc644a0a2fd350e2a4cc1b128e438b
+Author: bajaco <brett@agyx.org>
+Date:   Sun Oct 11 04:59:09 2020 +0000
+
+    Fix: database naming
+    
+    renamed database db for consistency with FlaskSQLAlchemy docs
+
+commit 615b386aad8a57fe0e971b55f14079ac69c06263
+Author: bajaco <brett@agyx.org>
+Date:   Sun Oct 11 04:53:38 2020 +0000
+
+    Chore: Add requirements
+    
+    Added requirements file for backend
+
+commit 1d55b3de98a4be88f0fd6493a8ee54fb76466ac7
+Author: bajaco <brett@agyx.org>
+Date:   Sun Oct 11 04:44:00 2020 +0000
+
+    feat: database implementation
+    
+    Database setup with User model for testing
+
+commit c10ed3c5c3b7a2ae4c9360adbdc41d256e5555a9
+Author: bajaco <brett@agyx.org>
+Date:   Sun Oct 11 04:30:16 2020 +0000
+
+    fix: project structure
+    
+    Changed blank files to READMEs,
+    added routes.py for routes.
+
+commit 6bd1b7dc77c4905b54c4a5996b65865e8c369c38
+Author: bajaco <brett@agyx.org>
+Date:   Sun Oct 11 04:29:26 2020 +0000
+
+    fix: project structure
+    
+    Changed blank files to READMEs,
+    added routes.py for routes.
+
+commit 4f214d509df978a8bc4de53058538373c860117b
+Author: bajaco <brett@agyx.org>
+Date:   Sun Oct 11 04:26:36 2020 +0000
+
+    chore: Project structure
+    
+    Modified project structure to for clarity
+
+commit 27a1aa160ce8bfff89df3a631b23d8a57e5898fd
+Author: bajaco <brett@agyx.org>
+Date:   Sun Oct 11 04:25:47 2020 +0000
+
+    chore: Project structure
+    
+    Modified project structure to for clarity
+
+commit 1e387ee4db02cdac81242fa4199031041fd63e21
+Author: bajaco <brett@agyx.org>
+Date:   Sun Oct 11 04:20:22 2020 +0000
+
+    chore: Project structure
+    
+    Modified project structure to for clarity
+
+commit f77075fee712ac32cbc01fde7b77cd3b2a9a6885
+Author: bajaco <brett@agyx.org>
+Date:   Sun Oct 11 03:59:42 2020 +0000
+
+    docs: Specification
+    
+    Added a specification file to outline goals
+    for the project and planned implementation.
+
+commit c4d756cc936e391f582cd67daba468547137dc4a
+Author: bajaco <brett@agyx.org>
+Date:   Sat Oct 10 23:53:30 2020 +0000
+
+    Initial Commit
