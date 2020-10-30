@@ -1,46 +1,67 @@
-import os
 import unittest
 import json
-from flask_sqlalchemy import SQLAlchemy
-from src import create_app
-from src.models import User, Published_Tutorial, Unpublished_Tutorial
-from pathlib import Path
 from dotenv import load_dotenv
-load_dotenv('../flaskenv')
+from flask import Flask
+from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+import os
+from pathlib import Path
+from src.models import Unpublished_Tutorial, Published_Tutorial, Tag
+
+db = SQLAlchemy()
+
+
+def create_app(test_config=True):
+    load_dotenv('.flaskenv')
+    app = Flask(__name__, instance_relative_config=True)
+    CORS(app)
+    DATABASE_NAME = os.environ.get('TEST_DATABASE_NAME')
+    DATABASE_USER = os.environ.get('DATABASE_USER')
+    DATABASE_LOCATION = os.environ.get('DATABASE_LOCATION')
+    database_path = "postgresql://{}@{}/{}".format(
+            DATABASE_USER, DATABASE_LOCATION, DATABASE_NAME)
+    app.config["SQLALCHEMY_DATABASE_URI"] = database_path
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+    app.config['DEBUG'] = False
+    app.config['TESTING'] = False
+    db.app = app
+    db.init_app(app)
+    migrate = Migrate(app, db)
+    from src import views, error_handlers
+    app.register_blueprint(views.bp)
+    app.register_blueprint(error_handlers.bp)
+
+    return app
 
 
 class FlatTutorialsTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.app = create_app(test_config=True)
+        self.app = create_app()
         self.client = self.app.test_client
-        TEST_DATABASE_NAME = os.environ.get('TEST_DATABASE_NAME')
-        DATABASE_LOCATION = os.environ.get('DATABASE_LOCATION')
-        DATABASE_USER = os.environ.get('DATABASE_USER')
-        database_path = "postgres://{}@{}/{}".format(
-                DATABASE_USER, DATABASE_LOCATION, TEST_DATABASE_NAME)
-        self.app.config["SQLALCHEMY_DATABASE_URI"] = database_path
 
         filepath = Path(__file__).parent.absolute() / 'auth.json'
         with open(filepath) as f:
             self.tokens = json.loads(f.read())
 
-            # submit a tutorial from registered user
-            self.tutorial_id = self.makeSubmission()['tutorial']['author_id']
+        # submit a tutorial from registered user
+        self.tutorial_id = self.makeSubmission()['tutorial']['author_id']
 
-            # publish one
-            self.publish()
+        # publish one
+        self.publish()
 
     # Submit a tutorial to return the id of current JWT's user
-
     def makeSubmission(self):
         submit_data = {
-            'title': 'title',
-            'text': 'text',
-            'tags': ['tech1', 'tech2', 'tech3']
-        }
+                'title': 'title',
+                'text': 'text',
+                'tags': 'tech1, tech2, tech3'
+                }
         res = self.client().post(
-                '/submit', json=submit_data,
+                '/submit',
+                json=submit_data,
                 headers={'Authorization': self.tokens['registered_user']})
         data = json.loads(res.data)
         self.tutorial_id = data['tutorial']['id']
@@ -82,8 +103,8 @@ class FlatTutorialsTestCase(unittest.TestCase):
         self.makeSubmission()
         self.publish()
         submit_data = {
-            'reviewer_notes': 'notes'
-        }
+                'reviewer_notes': 'notes'
+                }
         res = self.client().patch(
                 '/admin/unpublish/{}'.format(self.tutorial_id),
                 json=submit_data,
@@ -96,7 +117,6 @@ class FlatTutorialsTestCase(unittest.TestCase):
     ###################
     # moderator tests #
     ###################
-
     def test_moderator_get_unpublished_list(self):
         self.makeSubmission()
 
@@ -109,9 +129,7 @@ class FlatTutorialsTestCase(unittest.TestCase):
         self.assertTrue(len(data['tutorials']))
 
     def test_moderator_get_unpublished_tutorial(self):
-
         self.makeSubmission()
-
         res = self.client().get(
                 '/unpublished/{}'.format(self.tutorial_id),
                 headers={'Authorization': self.tokens['moderator']})
@@ -137,7 +155,8 @@ class FlatTutorialsTestCase(unittest.TestCase):
         self.makeSubmission()
         submit_data = {'review_notes': 'notes'}
         res = self.client().patch(
-                '/deny/{}'.format(self.tutorial_id), json=submit_data,
+                '/deny/{}'.format(self.tutorial_id),
+                json=submit_data,
                 headers={'Authorization': self.tokens['moderator']})
         data = json.loads(res.data)
         self.assertTrue(data['success'])
@@ -173,15 +192,15 @@ class FlatTutorialsTestCase(unittest.TestCase):
     #################
     # end_user tests #
     ##################
-
     def test_end_user_submit(self):
         submit_data = {
-            'title': 'title',
-            'text': 'text',
-            'tags': ['tech1', 'tech2', 'tech3']
-        }
+                'title': 'title',
+                'text': 'text',
+                'tags': 'tech1, tech2, tech3'
+                }
         res = self.client().post(
-                '/submit', json=submit_data,
+                '/submit',
+                json=submit_data,
                 headers={'Authorization': self.tokens['registered_user']})
         data = json.loads(res.data)
         self.assertTrue(data['success'])
@@ -191,10 +210,10 @@ class FlatTutorialsTestCase(unittest.TestCase):
     def test_end_user_edit(self):
         previous_submission = self.makeSubmission()
         submit_data = {
-            'title': 'title',
-            'text': 'text',
-            'tags': ['tech4', 'tech5', 'tech6']
-        }
+                'title': 'title',
+                'text': 'text',
+                'tags': 'tech4, tech5, tech6'
+                }
         res = self.client().patch(
                 '/edit/{}'.format(previous_submission['tutorial']['id']),
                 json=submit_data,
@@ -202,17 +221,16 @@ class FlatTutorialsTestCase(unittest.TestCase):
         data = json.loads(res.data)
         self.assertTrue(data['success'])
         self.assertEqual(res.status_code, 200)
-        self.assertEqual(
-            previous_submission['tutorial']['id'],
-            data['tutorial']['id'])
+        self.assertEqual(previous_submission['tutorial']['id'],
+                         data['tutorial']['id'])
 
     def test_end_user_edit_WRONG_USER(self):
         previous_submission = self.makeSubmission()
         submit_data = {
-            'title': 'title',
-            'text': 'text',
-            'tags': ['tech4', 'tech5', 'tech6']
-        }
+                'title': 'title',
+                'text': 'text',
+                'tags': 'tech4, tech5, tech6'
+                }
         res = self.client().patch(
                 '/edit/{}'.format(previous_submission['tutorial']['id']),
                 json=submit_data,
@@ -224,8 +242,8 @@ class FlatTutorialsTestCase(unittest.TestCase):
     def test_end_user_get_submitted_list(self):
         previous_submission = self.makeSubmission()
         res = self.client().get(
-                '/submitted', headers={
-                    'Authorization': self.tokens['registered_user']})
+                '/submitted',
+                headers={'Authorization': self.tokens['registered_user']})
         data = json.loads(res.data)
         self.assertTrue(data['success'])
         self.assertEqual(res.status_code, 200)
@@ -233,9 +251,9 @@ class FlatTutorialsTestCase(unittest.TestCase):
 
     def test_end_user_get_submitted_tutorial(self):
         previous_submission = self.makeSubmission()
-        res = self.client().get('/submitted/{}'.format(
-            previous_submission['tutorial']['id']), headers={
-            'Authorization': self.tokens['registered_user']})
+        res = self.client().get(
+                '/submitted/{}'.format(previous_submission['tutorial']['id']),
+                headers={'Authorization': self.tokens['registered_user']})
         data = json.loads(res.data)
         self.assertTrue(data['success'])
         self.assertEqual(res.status_code, 200)
@@ -243,9 +261,8 @@ class FlatTutorialsTestCase(unittest.TestCase):
     def test_end_user_get_submitted_tutorial_WRONG_USER(self):
         previous_submission = self.makeSubmission()
         res = self.client().get(
-            '/submitted/{}'
-            .format(previous_submission['tutorial']['id']),
-            headers={'Authorization': self.tokens['administrator']})
+                '/submitted/{}'.format(previous_submission['tutorial']['id']),
+                headers={'Authorization': self.tokens['administrator']})
         data = json.loads(res.data)
         self.assertFalse(data['success'])
         self.assertEqual(res.status_code, 403)
@@ -277,8 +294,8 @@ class FlatTutorialsTestCase(unittest.TestCase):
         self.makeSubmission()
         self.publish()
         tutorial = Published_Tutorial.query.first()
-        res = self.client().get('/published/by-author/{}'
-                                .format(tutorial.author_id))
+        res = self.client().get(
+                '/published/by-author/{}'.format(tutorial.author_id))
         data = json.loads(res.data)
         self.assertTrue(data['success'])
         self.assertEqual(res.status_code, 200)
@@ -333,8 +350,8 @@ class FlatTutorialsTestCase(unittest.TestCase):
         self.makeSubmission()
         tutorial = Unpublished_Tutorial.query.first()
         submit_data = {
-            'reviewer_notes': 'notes'
-        }
+                'reviewer_notes': 'notes'
+                }
         res = self.client().patch('/deny/{}'.format(tutorial.id),
                                   json=submit_data)
         data = json.loads(res.data)

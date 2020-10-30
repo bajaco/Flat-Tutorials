@@ -29,10 +29,12 @@ Contents should be similar to the following:
 
 ### Testing
 
-1. The test_template_generator.py file is not important, it was simply used to generate logical test names.
-2. Create a copy of the database: `pg_dump flat-tutorials | psql flat-tutorials-test`
+1. The `test_template_generator.py` file is not important, it was simply used to generate logical test names.
+2. Create a copy of the database: 
+`createdb flat-tutorials-test`
+`pg_dump flat-tutorials | psql flat-tutorials-test`
 3. Create an auth.json file: `cp auth_example.json auth.json`
 4. Use this link: (`https://agyx.auth0.com/authorize?audience=http://localhost:5000/&scope=openid profile email&response_type=token&client_id=5saEDf04PA0D0TZOG67sUCMtg5Dtpmpd&redirect_uri=http://localhost:5000/`) to get JWTs to populate auth.json.
 5. Add the JWTs to auth.json
-6. Add src to your python path (system-dependant)
-7. Run the tests: `python src/test_app.py`
+6. Source the virtual environment if necessary: `source venv/bin/activate`
+7. Run the tests: `python test_app.py`

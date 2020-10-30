@@ -1,3 +1,4 @@
+
 from flask import Blueprint
 from flask import jsonify
 from flask import request
@@ -9,8 +10,8 @@ from werkzeug.exceptions import abort
 import requests
 bp = Blueprint('views', __name__)
 
-
 # Helper functions
+
 
 # When called this will get userinformation to be used
 # for context in various views. If the user is not present
@@ -29,9 +30,8 @@ def user_context(payload):
             r = requests.get(url=user_url, headers=authorization)
             user_info = r.json()
             user = User(
-                auth0_id=user_info['sub'],
-                username=user_info['sub'][:20]
-            )
+                    auth0_id=user_info['sub'],
+                    username=user_info['sub'][:20])
             if 'email' in user_info:
                 user.email = user_info['email']
 
@@ -40,15 +40,15 @@ def user_context(payload):
             # placeholder until the id is created.
             user.insert()
             user.username = ''.join(
-                user_info['nickname'].split()) + '#' + str(user.id)
+                    user_info['nickname'].split()) + '#' + str(user.id)
             user.update()
-        except BaseException:
+        except Exception:
             abort(500)
     return {
-        'id': user.id,
-        'email': user.email,
-        'username': user.username,
-    }
+            'id': user.id,
+            'email': user.email,
+            'username': user.username,
+            }
 
 ###############
 # OPEN ACCESS #
@@ -65,7 +65,7 @@ def get_published_list():
     return jsonify({
         'success': True,
         'tutorials': result
-    }), 200
+        }), 200
 
 
 # get long form of published tutorial
@@ -88,30 +88,33 @@ def get_published_list_by_author(author_id):
     return jsonify({
         'success': True,
         'tutorials': result
-    }), 200
+        }), 200
 
 
 # get all shortform list by tag
 @bp.route('/published/tags/<string:tag>', methods=['GET'])
 def get_published_by_tag(tag):
-    tutorials = Tag.query.filter(func.lower(
-        Tag.name) == tag.lower()).first_or_404().published_tutorials
+    tutorials = Tag.query.filter(
+            func.lower(Tag.name) ==
+            tag.lower()).first_or_404().published_tutorials
     if not tutorials:
         abort(404)
     result = [tut.short() for tut in tutorials]
     return jsonify({
         'success': True,
         'tutorials': result
-    }), 200
+        }), 200
 
 
 # get all shortform list by tags
 @bp.route('/published/tags/<string:tag1>/<string:tag2>', methods=['GET'])
 def get_published_by_tags(tag1, tag2):
-    res1 = Tag.query.filter(func.lower(Tag.name) ==
-                            tag1.lower()).first_or_404().published_tutorials
-    res2 = Tag.query.filter(func.lower(Tag.name) ==
-                            tag2.lower()).first_or_404().published_tutorials
+    res1 = Tag.query.filter(
+            func.lower(Tag.name) ==
+            tag1.lower()).first_or_404().published_tutorials
+    res2 = Tag.query.filter(
+            func.lower(Tag.name) ==
+            tag2.lower()).first_or_404().published_tutorials
     tutorials = [tut for tut in res1 if tut in res2]
     if not tutorials:
         abort(404)
@@ -119,7 +122,7 @@ def get_published_by_tags(tag1, tag2):
     return jsonify({
         'success': True,
         'tutorials': result
-    }), 200
+        }), 200
 
 
 ###################
@@ -135,12 +138,12 @@ def submit(payload):
     try:
         data = request.get_json()
         tutorial = Unpublished_Tutorial(
-            author_id=context['id'],
-            title=data.get('title'),
-            text=data.get('text'),
-            under_review=True,
-            published=False
-        )
+                author_id=context['id'],
+                title=data.get('title'),
+                text=data.get('text'),
+                under_review=True,
+                published=False
+                )
         if data.get('tags'):
             for tag_name in data.get('tags').split(', '):
                 tag = Tag.query.filter_by(name=tag_name).one_or_none()
@@ -150,7 +153,7 @@ def submit(payload):
                 tutorial.tags.append(tag)
         tutorial.insert()
         result = tutorial.long()
-    except BaseException:
+    except Exception:
         abort(500)
     return jsonify({
         'success': True,
@@ -181,14 +184,14 @@ def edit(payload, tutorial_id):
                     tag.insert()
                 tutorial.tags.append(tag)
         tutorial.update()
-    except BaseException:
+    except Exception:
         abort(500)
 
     result = tutorial.long()
     return jsonify({
         'success': True,
         'tutorial': result
-    }), 200
+        }), 200
 
 
 # Get short form submitted tutorials
@@ -197,12 +200,12 @@ def edit(payload, tutorial_id):
 def get_submitted_list(payload):
     context = user_context(payload)
     tutorials = Unpublished_Tutorial.query.filter_by(
-        author_id=context['id']).all()
+            author_id=context['id']).all()
     result = [tutorial.short() for tutorial in tutorials]
     return jsonify({
         'success': True,
         'tutorials': result
-    }), 200
+        }), 200
 
 
 # Get long form submitted tutorial
@@ -217,7 +220,7 @@ def get_submitted_tutorial(payload, tutorial_id):
     return jsonify({
         'success': True,
         'tutorial': result
-    }), 200
+        }), 200
 
 
 ##############
@@ -239,7 +242,7 @@ def get_unpublished_list(payload):
     return jsonify({
         'success': True,
         'tutorials': result
-    }), 200
+        }), 200
 
 
 # get long form of unpublished tutorial
@@ -290,7 +293,7 @@ def publish(payload, tutorial_id):
             published.update()
         else:
             published.insert()
-    except BaseException:
+    except Exception:
         abort(500)
 
     # return newly published tutorial
@@ -299,7 +302,7 @@ def publish(payload, tutorial_id):
         'success': True,
         'updated': update,
         'tutorial': result
-    }), 200
+        }), 200
 
 
 # Deny a tutorial from being published due to content or
@@ -314,13 +317,13 @@ def deny(payload, tutorial_id):
         tutorial.reviewer_notes = data.get('reviewer_notes')
         tutorial.under_review = False
         tutorial.update()
-    except BaseException:
+    except Exception:
         abort(500)
     return jsonify({
         'success': True,
         'denied_id': tutorial.id,
         'reviewer_notes': data.get('reviewer_notes')
-    }), 200
+        }), 200
 
 
 ##################
@@ -340,8 +343,8 @@ def list_users(payload):
         return jsonify({
             'success': True,
             'users': result
-        }), 200
-    except BaseException:
+            }), 200
+    except Exception:
         abort(500)
 
 
@@ -360,8 +363,8 @@ def delete_tutorial(payload, tutorial_id):
         return jsonify({
             'success': True,
             'deleted_id': tutorial_id
-        }), 200
-    except BaseException:
+            }), 200
+    except Exception:
         abort(500)
 
 
@@ -380,11 +383,11 @@ def unpublish_tutorial(payload, tutorial_id):
         # Add notes to unpublished tutorial to inform user why it was deleted.
         unpublished_tutorial.reviewer_notes = data.get('reviewer_notes')
         unpublished_tutorial.update()
-    except BaseException:
+    except Exception:
         abort(500)
 
     return jsonify({
         'success': True,
         'unpublished_id': unpublished_tutorial.id,
         'reviewer_notes': data.get('reviewer_notes')
-    }), 200
+        }), 200

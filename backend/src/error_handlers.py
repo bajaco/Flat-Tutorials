@@ -22,6 +22,15 @@ def unauthorized(error):
         }), 401
 
 
+@bp.app_errorhandler(AuthError)
+def unauthorized(error):
+    return jsonify({
+        'success': False,
+        'error': 401,
+        'message': 'unauthorized'
+        }), 401
+
+
 @bp.app_errorhandler(404)
 def not_found(error):
     return jsonify({
